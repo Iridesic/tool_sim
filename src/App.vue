@@ -1,16 +1,39 @@
+<!--
+  页面说明：
+  本页面为应用入口，加载主页面Main，并全局处理ResizeObserver。
+-->
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <Main/>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Main from './views/Main copy1.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    Main
   }
+}
+
+const debounce = (fn, delay) => {
+  let timer
+   return (...args) => {
+     if (timer) {
+       clearTimeout(timer)
+     }
+     timer = setTimeout(() => {
+       fn(...args)
+     }, delay)
+   }
+}
+  
+const _ResizeObserver = window.ResizeObserver;
+window.ResizeObserver = class ResizeObserver extends _ResizeObserver{
+   constructor(callback) {
+     callback = debounce(callback, 200);
+     super(callback);
+   }
 }
 </script>
 
@@ -21,6 +44,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  
 }
 </style>
