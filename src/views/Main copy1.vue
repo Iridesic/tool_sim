@@ -5,7 +5,6 @@
         <div class="logo">MA均线分析平台</div>
       </el-container>
       <el-container style="height: 94vh;">
-        <!--左侧股票检索部分-->
         <el-aside>
           <div style="height: 340px; background-color: #f3f3f3; border-radius: 10px; margin-top: 5px; margin-left: 5px;">
             <el-tabs
@@ -187,7 +186,6 @@
                       >
                         请选择待查找股票集
                       </el-button> 
-                    <!----------------Dialog-------------------->
                     <DialogChoose2
                       :visible="dialogVisible"
                       @close="dialogVisible = false"
@@ -215,7 +213,6 @@
               </div>
 
 
-              <div style="font-size: 13px; font-weight: 700; color:#a9a9a9; background-color: #ededed; padding: 1px; width: 275px; margin-left: 10px; margin-top: 15px;">|    选用均线类型设置 ————————————</div>
               <div class="div5 tour-ma-config">
                 <div
                   style="
@@ -241,57 +238,6 @@
                   ></el-checkbox>
                 </el-checkbox-group>
               </div>
-              <div class="div7 tour-Market-index">
-                <div
-                  style="
-                    font-size: 13px;
-                    font-weight: bold;
-                    margin-left: -180px;
-                    margin-top: 6px;
-                  "
-                >
-                  上证/深证指数:
-                </div>
-                <el-checkbox-group
-                  v-model="store.state.modeInfo.lines1"
-                  class="custom-checkbox-group"
-                  style = "margin-left: 15px;"
-                >
-                  <el-checkbox
-                    v-for="item in maList"
-                    :key="item"
-                    :label="item"
-                    :value="item"
-                    class="custom-checkbox"
-                  ></el-checkbox>
-                </el-checkbox-group>
-              </div>
-
-              <div class="div7 tour-career-index">
-                <div
-                  style="
-                    font-size: 13px;
-                    font-weight: bold;
-                    margin-left: -210px;
-                    margin-top: 6px;
-                  "
-                >
-                  行业指数:
-                </div>
-                <el-checkbox-group
-                  v-model="store.state.modeInfo.lines2"
-                  class="custom-checkbox-group"
-                  style = "margin-left: 15px;"
-                >
-                  <el-checkbox
-                    v-for="item in maList"
-                    :key="item"
-                    :label="item"
-                    :value="item"
-                    class="custom-checkbox"
-                  ></el-checkbox>
-                </el-checkbox-group>
-              </div>
 
               <div style="margin-left: -10px; margin-top: 15px; margin-bottom: 10px;">
                 <el-button @click="getShowDialog" type="primary" plain style="font-size: 13px; height: 26px; width: 120px;" >配置确认</el-button>
@@ -304,7 +250,6 @@
 
               <div v-if="isGetResult">
                 <div style="font-size: 13px; font-weight: 700; color:#8c8c8c; background-color: #ededed; padding: 1px; width: 275px; margin-left: 10px; margin-top: 10px;">|    相似股票筛选结果 ————————————</div>
-                <!--展示对比股票-->
                 <el-table
                   :data="tableDataRecent"
                   class="scrollable-div"
@@ -354,7 +299,6 @@
               </div>
               <div v-if="isGetResult2">
                 <div style="font-size: 13px; font-weight: 700; color:#8c8c8c; background-color: #ededed; padding: 1px; width: 275px; margin-left: 10px; margin-top: 10px;">|    相似股票筛选结果 ————————————</div>
-                <!--展示股票结果数-->
                 <el-table
                   :data="tableDataRecent1"
                   class="scrollable-div"
@@ -404,12 +348,10 @@
           </div>
 
         </el-aside>
-        <!--右侧中央均线展示部分-->
         <el-main
           style="background-color: white; padding: 0; position: relative; height: 100%; min-height: 0;"
           class="hide-scrollbar"
         >
-          <!--选中股票信息展示部分-->
           <div
             style="
               display: flex;
@@ -422,11 +364,9 @@
               border-radius: 10px;
               margin-top: 5px;
               margin-left: 5px;
-              /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
             "
           >
             <div style="display: flex; flex-direction: column; justify-content: flex-start; min-width: 900px;">
-              <!-- 股票名、代码、现手等单独一行（7列） -->
               <div style="display: flex; align-items: center; padding-top: 5px;">
                 <span style="margin-top:-3px; font-weight: bold; margin-left: 14px; display: inline-block;">{{ stockShowInfo.name }} </span>
                 <span style="font-weight: bold;  margin-left: 5px; display: inline-block;">({{ stockShowInfo.code }})</span>
@@ -441,15 +381,8 @@
                     </el-icon>
                   </el-tooltip>
                 </span>
-                <!-- <el-button
-                  type="primary"
-                  class="btn-base-stock"
-                  style="margin-top: 0px; margin-left: -20px; height: 25px; font-size: 12px; font-weight: bold; width: 100px;"
-                  @click="handleAnalyze"
-                >设置为基准股票</el-button> -->
-              </div>
+                </div>
 
-              <!-- 第一行标签（7列） -->
               <div style="display: flex; align-items: left; padding-top: 5px; font-size: 12px; margin-left: 7px;">
                 <span style="min-width: 90px; margin-left: 7px; display: inline-block;">日期：2025-05-23</span>
                 <span style="min-width: 90px; margin-left: 10px; display: inline-block;">MA4：19.560</span>
@@ -459,23 +392,67 @@
                 <span style="min-width: 90px; margin-left: 10px; display: inline-block;">MA20：20.179</span>
                 <span style="min-width: 90px; margin-left: 10px; display: inline-block;">MA47：19.899</span>
               </div>
-              <!-- 第二行标签（7列） -->
               <div style="display: flex; align-items: left; padding-top: 2px; font-size: 12px; margin-left: 15px;">
                 <span style="min-width: 90px; margin-left: -15px; display: inline-block;">板块：主板</span>
                 <span style="min-width: 90px; margin-left: 6px; display: inline-block;">行业：计算机、通信和其他电子设备制造业</span>
               </div>
             </div>
           </div>
-          <!--MA曲线展示部分-->
           <div style="display: flex; margin-top: 20px; width: 100%; justify-content: center; align-items: flex-start;">
-            <div style="width: 1000px; gap: 0px; margin-top: -40px; margin-left: -60px;">
-                <Graph style="position: relative; z-index: 3;" :code="graphCode1" :startDate="modeInfo.startDate" :endDate="modeInfo.endDate" :checkListMAOption="store.state.modeInfo.lines" :width="1050" :height="240" :legendData="store.state.modeInfo.lines" />
-                <Graph style="position: relative; z-index: 2; margin-top: -40px;" :code="graphCode3" :startDate="modeInfo.startDate" :endDate="modeInfo.endDate" :checkListMAOption="store.state.modeInfo.lines2" :width="1050" :height="240" :legendData="store.state.modeInfo.lines2" />
-                <Graph style="position: relative; z-index: 1; margin-top: -40px;" :code="graphCode2" :startDate="modeInfo.startDate" :endDate="modeInfo.endDate" :checkListMAOption="store.state.modeInfo.lines1" :width="1050" :height="240" :legendData="store.state.modeInfo.lines1" />            </div>
+            <div style="width: 1000px; gap: 0px; margin-top: 0px; margin-left: -60px;">
+                <Graph
+                  ref="graphRef"
+                  style="position: relative; z-index: 10;"
+                  :code="graphCode1"
+                  :startDate="modeInfo.startDate"
+                  :endDate="modeInfo.endDate"
+                  :checkListMAOption="store.state.modeInfo.lines"
+                  :width="1050"
+                  :height="600"
+                  :legendData="store.state.modeInfo.lines"
+                  :selectedDatePreset="selectedDatePreset"
+                  :isZoomLocked="isZoomLocked"
+                  @brush-updated="handleBrushUpdated" 
+                  :savedBrushes="savedBrushAreas"
+                /> 
+              <div style="border: 1px solid #ededed; height: 140px; width: 90%; margin-top: -160px; margin-left: 80px; border-radius: 5px; overflow: hidden;">
+                <!-- 为图片列表添加容器并应用Flex布局 -->
+                <div style="display: flex; height: 100%; align-items: center; padding: 0 15px; overflow-x: auto; scrollbar-width: thin;">
+                  <div v-for="img in imageList" :key="img.filename" class="image-gallery" style="margin-right: 15px; flex-shrink: 0;">
+                    <img 
+                      :src="img.url" 
+                      :alt="img.filename" 
+                      :title="img.filename"
+                      class="screenshot-img"
+                      style="width: 200px; height: 200px; object-fit: cover; border-radius: 3px; margin-top: 10px;"
+                      @error="handleImageError(img)"
+                    >
+                  </div>
+                </div>
+                
+                <!-- 空状态和加载状态保持不变，但添加居中样式 -->
+                <div v-if="imageList.length === 0 && !loading" class="empty-state" style="height: 100%; display: flex; align-items: center; justify-content: center; color: #999;">
+                  暂无图片数据
+                </div>
+                <div v-if="loading" class="loading-state" style="height: 100%; display: flex; align-items: center; justify-content: center; color: #666;">
+                  加载中...
+                </div>
+              </div>     
+              </div>
             <div style="margin-left: 10px;"><ModeCards /></div>
           </div>
+          <div style="position: absolute; top: 100px; right: 300px; z-index: 101;">
+            <el-button size="small" @click="setDateRange('daily')">日线</el-button>
+            <el-button size="small" @click="setDateRange('weekly')">周线</el-button>
+            <el-button size="small" @click="setDateRange('monthly')">月线</el-button>
+            <el-button size="small" @click="toggleZoomLock">
+              {{ isZoomLocked ? '取消标记' : '画框标记' }}
+            </el-button>
+            <el-button size="small" @click="saveCurrentBrush" :disabled="!activeBrushData"> 保存当前标记
+            </el-button>
+            <el-button size="small" @click="getAllImages()">刷新选取结果</el-button>
+          </div>
           <hr style="margin-top:10px; margin-bottom: 0px;"/>
-          <!--结果展示部分-->
           <ResultShow v-if="resultType"/>
         </el-main>
       </el-container>
@@ -485,11 +462,12 @@
 
 <script setup>
 import * as echarts from "echarts";
-import { nextTick, ref, watch, computed, reactive } from "vue";
+import { nextTick, ref, watch, computed, reactive, onMounted } from "vue";
 import axios from "axios";
 import { useStore } from "vuex";
+import { StarFilled, Star } from '@element-plus/icons-vue';
+import html2canvas from 'html2canvas';
 
-// 引入子组件
 import ModeCards from "@/views/ModeCards.vue";
 import ResultShow from "@/views/ResultShow.vue";
 import Graph from "@/views/Graph.vue";
@@ -499,45 +477,28 @@ import DialogChoose2 from "@/views/DialogChoose2.vue";
 const value = ref('')
 const isGetResult = ref(false);
 const isGetResult2 = ref(false);
+const isZoomLocked = ref(false);
+const savedBrushAreas = ref([]);
+
+const activeBrushData = ref(null); 
+
+const graphRef = ref(null);
 
 const options = [
-  {
-    value: '近20天',
-    label: '近20天',
-  },
-    {
-    value: '近30天',
-    label: '近30天',
-  },
-    {
-    value: '近40天',
-    label: '近40天',
-  },
- 
+  { value: '近20天', label: '近20天' },
+  { value: '近30天', label: '近30天' },
+  { value: '近40天', label: '近40天' },
 ]
 
-// dialog测试数据 ********************************
 const showDialog = ref(false);
 
-// 设置全局store数据
 const store = useStore();
 const resultType = ref(false);
 const resultMode = ref(false);
 const resultStock = ref(false);
 const dialogVisible = ref(false);
 const graphCode1 = ref("000021");
-const graphCode2 = ref("000001");
-const graphCode3 = ref("600746");
 const maList = ref(["MA4", "MA8", "MA12", "MA16", "MA20", "MA47"]);
-// const isBaseStock = computed(() => {
-//   return store.state.baseInfo.isStock === true;
-// });
-// const isBaseMode = computed(() => {
-//   return store.state.baseInfo.isMode === true;
-// });
-// const isDisabled = computed(() => {
-//   return store.state.baseInfo.isDisabled === true;
-// });
 const isSelected = computed(() => {
   const code = stockShowInfo.value?.code;
   return store.state.stockList.some(item => item.code === code && item.isSelected);
@@ -550,14 +511,12 @@ const isChooseStock = computed(() => {
   return store.state.baseInfo.isChooseStock === true;
 });
 
-// 定义响应式状态
 const baseInfo = reactive({
-  isHistory: false, // 是否为历史查找
-  isCross: false,   // 是否为横向对比查找
-  isSection: false, // 是否为区间
-  isChoose: false,  // 是否为选股
+  isHistory: false,
+  isCross: false,
+  isSection: false,
+  isChoose: false,
 });
-// 状态重置函数
 const resetBaseInfo = () => {
   baseInfo.isHistory = false;
   baseInfo.isCross = false;
@@ -565,60 +524,83 @@ const resetBaseInfo = () => {
   baseInfo.isChoose = false;
 };
 
+// 定义响应式数据
+const imageList = ref([]);
+const loading = ref(true);
+
+// 图片加载失败处理函数
+const handleImageError = (img) => {
+  // 可以替换为占位图地址
+  img.url = 'https://picsum.photos/300/200?grayscale&blur=2';
+};
+
+// 获取图片列表函数（修改版）
+const fetchImages = async () => {
+  const timestamp = new Date().getTime();
+  // 后端API基础地址（建议配置在环境变量中）
+  const API_BASE_URL = 'http://127.0.0.1:5000';
+  
+  try {
+    loading.value = true;
+    const response = await axios.get(`${API_BASE_URL}/get_all_screenshots?timestamp=${timestamp}`);
+    
+    if (response.data.success) {
+      // 处理图片列表，修正URL并编码特殊字符
+      imageList.value = response.data.images.map(image => ({
+        ...image,
+        // 1. 使用完整URL避免相对路径问题
+        // 2. 对文件名名进行URL编码，处理空格、中文等特殊字符
+        url: `${API_BASE_URL}/get_screenshot/${encodeURIComponent(image.filename)}`
+      }));
+    }
+  } catch (err) {
+    console.error('获取图片失败:', err);
+    // 更详细的错误信息输出
+    if (err.response) {
+      console.error('错误状态码:', err.response.status);
+      console.error('错误内容:', err.response.data);
+    }
+  } finally {
+    loading.value = false;
+  }
+};
+    
+
+// 组件挂载时获取数据
+onMounted(() => {
+  fetchImages();
+});
+
+const getAllImages = () =>{
+  fetchImages();
+}
+
+
 const getButtonType = (weight) => {
   switch (weight) {
-    case 3: return 'danger';      // 极强 - 红色
-    case 2: return 'warning';     // 强 - 橙色
-    case 1: return 'success';     // 中 - 绿色
-    case 0: return 'primary';     // 弱 - 蓝色
-    default: return 'default';    // 默认 - 灰色
+    case 3: return 'danger';
+    case 2: return 'warning';
+    case 1: return 'success';
+    case 0: return 'primary';
+    default: return 'default';
   }
 };
 
-// 收藏/取消收藏逻辑
 const toggleFavorite = () => {
   const code = stockShowInfo.value?.code;
-  if (!code) return;
+  if (!code) {
+    return;
+  }
   const idx = store.state.stockList.findIndex(item => item.code === code);
   if (idx !== -1) {
     if (!store.state.stockList[idx].isSelected) {
-      // 加入自选
       store.state.stockList[idx].isSelected = true;
-      // 可选：弹窗提示"已添加到自选"
     } else {
-      // 已在自选，再次点击则移除
       store.state.stockList[idx].isSelected = false;
-      // 可选：弹窗提示"已移除自选"
     }
   }
 };
 
-// // 切换按钮状态的方法
-// const toggleButton = (key) => {
-//   console.log("切换按钮状态------------------", key);
-//   // 如果点击的按钮当前为true，则点击后设为false
-//   if (baseInfo[key]) {
-//     baseInfo[key] = false;
-//   } else {
-//     // 否则将点击的设为true，另一个设为false
-//     baseInfo.isHistory = key === 'isHistory';
-//     baseInfo.isCross = key === 'isCross';
-//   }
-// };
-
-// const toggleButton1 = (key) => {
-//   console.log("切换第一序列按钮状态------------------", key);
-//   // 如果点击的按钮当前为true，则点击后设为false
-//   if (baseInfo[key]) {
-//     baseInfo[key] = false;
-//   } else {
-//     // 否则将点击的设为true，另一个设为false
-//     baseInfo.isChoose = key === 'isChoose';
-//     baseInfo.isSection = key === 'isSection';
-//   }
-// };
-
-// 在组件 setup 函数中添加监听
 watch(() => baseInfo.isSection,(newValue) => {
     if (newValue === false) {
       baseInfo.isHistory = false;
@@ -627,30 +609,6 @@ watch(() => baseInfo.isSection,(newValue) => {
   }
 );
 
-// 新手指引--------------------------------------------------
-// 导入ref
-const stockTourVisible = ref(false);   // 个股指引显示状态
-const modeTourVisible = ref(false);    // 推荐模式指引显示状态
-const tourStep = ref(0);
-const modeTourStep = ref(0);
-
-// 开启指引方法
-const startStockTour = () => {
-  console.log("点击了个股新手指引");
-  setTimeout(() => {
-    stockTourVisible.value = true;
-  }, 80);
-};
-
-const startModeTour = () => {
-  console.log("点击了推荐模式新手指引");
-  setTimeout(() => {
-    modeTourVisible.value = true;
-  }, 80);
-};
-
-
-// input查找目标股票--------------------------------------------------
 const searchQuery = ref("");
 const filteredTableData1 = (item) => {
   return store.state.stockList.filter((row) => {
@@ -670,94 +628,36 @@ const filteredTableData2 = (item) => {
   });
 };
 
-// const tableDataRecent = ref(store.state.stockList1);
 const tableDataRecent = ref([
-  {
-    code: '002165',
-    name: '红宝丽',
-    weight: 3,
-    sim: '极强',
-  },
-  {
-    code: '002057',
-    name: '中钢天源',
-    weight: 2,
-    sim: '强',
-  },
-  {
-    code: '002455',
-    name: '百川股份',
-    weight: 2,
-    sim: '强',
-  },
-  {
-    code: '000830',
-    name: '鲁西化工',
-    weight: 1,
-    sim: '中',
-  },
-  {
-    code: '001207',
-    name: '联科科技',
-    weight: 0,
-    sim: '弱',
-  },
+  { code: '002165', name: '红宝丽', weight: 3, sim: '极强' },
+  { code: '002057', name: '中钢天源', weight: 2, sim: '强' },
+  { code: '002455', name: '百川股份', weight: 2, sim: '强' },
+  { code: '000830', name: '鲁西化工', weight: 1, sim: '中' },
+  { code: '001207', name: '联科科技', weight: 0, sim: '弱' },
 ])
 
 const tableDataRecent1 = ref([
-  {
-    code: '001255',
-    name: '博菲电器',
-    count: 21,
-  },
-  {
-    code: '001333',
-    name: '光华股份',
-    count: 20,
-  },
-  {
-    code: '000830',
-    name: '鲁西化工',
-    count: 10,
-  },
-  {
-    code: '002913',
-    name: '奥士康',
-    count: 8,
-  },
-  {
-    code: '002106',
-    name: '莱宝高科',
-    count: 6,
-  },
-  {
-    code: '001207',
-    name: '联科科技',
-    count: 5,
-  },
+  { code: '001255', name: '博菲电器', count: 21 },
+  { code: '001333', name: '光华股份', count: 20 },
+  { code: '000830', name: '鲁西化工', count: 10 },
+  { code: '002913', name: '奥士康', count: 8 },
+  { code: '002106', name: '莱宝高科', count: 6 },
+  { code: '001207', name: '联科科技', count: 5 },
 ])
 
-// 界面展示股票信息
 const stockShowInfo = ref();
 stockShowInfo.value = store.state.stockShowInfo;
 
-// 用户当前设置的模式信息
 const modeInfo = store.state.modeInfo;
 const searchInfo = store.state.searchInfo;
 
+const selectedDatePreset = ref(null);
+
 const getShowDialog = () => {
-  console.log("点击了自定义配置按钮");
   showDialog.value = true;
 };
 
-// 处理生成结果按钮的点击事件
 const getResult = async() => {
-  console.log("生成结果------------------------");
-  
-  const timestamp = new Date().getTime();
-  const newLines = store.state.modeInfo.lines.map(item => parseInt(item.replace('MA', ''), 10));
-  
-  console.log("当前的modeInfo------------------", store.state.modeInfo);
   if(isChooseStock.value === true)
   {
     isGetResult.value = true;
@@ -766,81 +666,20 @@ const getResult = async() => {
   {
     isGetResult2.value = true;
   }
-  // **************** 历史相似模式检测0713 ****************
-  // try {
-  //   resultType.value = true;
-  //   console.log("modeInfo----", store.state.modeInfo)
-  //   console.log("searchInfo----", store.state.searchInfo)
-  //   // 获取股票模式检测结果
-  //   const response = await axios.post(
-  //     `http://127.0.0.1:5000/detect_sim_history?timestamp=${timestamp}`,
-  //     {
-  //       pool: searchInfo.stockList, // 备选股票池
-  //       base_code: store.state.modeInfo.index,
-  //       base_start_date: store.state.modeInfo.startDate,
-  //       base_end_date: store.state.modeInfo.endDate,
-  //       start_date: searchInfo.searchStartDate, // 开始时间
-  //       end_date: searchInfo.searchEndDate, // 结束时间
-  //       ma_list: newLines.slice(1), // MA列表
-  //     },
-  //     {
-  //       withCredentials: true,  // 如果需要携带凭证
-  //       headers: {
-  //         'Content-Type': 'application/json'
-  //       }
-  //     }
-  //   );
-  //   console.log("获取到的结果列表------------------", response.data);
-  //   store.state.resultInfo.futureIncome = response.data.overall_return;
-  //   store.state.resultList2 =  response.data.result;    
-  // }catch (error) {
-  //   console.error('errors:', error);
-  // }
 };
 
-// 处理分析按钮的点击事件,设置当前股票为基准股票【更新modeInfo的数据】
-// const handleAnalyze = () => {
-//   resetBaseInfo();
-//   const foundStock = store.state.stockList.find(
-//     (item) => item.code === stockShowInfo.value.code
-//   );
-//   console.log("设置为基准股票--------------", foundStock);
-//   store.commit("updateModeInfo", {
-//     index: foundStock.code,
-//     name: foundStock.name,
-//     startDate: "2023-03-30",
-//     endDate: "2023-04-21",
-//     isMode: false, // 不是模式而是股票
-//     lines: ["个股", "MA4", "MA8", "MA12","MA16", "MA20", "MA47"],
-//     lines1: ["深证指数", "MA4", "MA8", "MA12","MA16", "MA20", "MA47"],
-//     lines2: ["行业指数", "MA4", "MA8", "MA12","MA16", "MA20", "MA47"],
-//   });
-//   store.commit("updateBaseInfo", {
-//     isMode: false,
-//     isStock: true,
-//     currentFunction: "个股模式查找"
-//   });
-//   value1.value = ['2023-03-30', '2023-04-21'];
-// };
-
-// 定义点击事件处理函数
 const handleRowClick = async (row) => {
   const code = row.code;
-  graphCode1.value = code; // 修改子图的数据
-  // 通过code的起始值判断上证指数 or 深证指数
-  if (code.startsWith('0')) {
-    graphCode2.value =  '000001'; // 上证指数
-  } else if (code.startsWith('6')) {
-    graphCode2.value =  '399001'; // 深证指数
-  }
+  graphCode1.value = code;
   const foundStock = store.state.stockList.find((item) => item.code === code);
-  stockShowInfo.value = { ...foundStock };
+  if (foundStock) {
+    stockShowInfo.value = { ...foundStock };
+  } else {
+  }
+  selectedDatePreset.value = null;
 };
 
-// ------------------------------------------------------------------------
-// 定义点击事件处理函数，处理相似股票结果的点击事件
 const handleRowClick1 = async (row) => {
-  // 标记显示结果详情
   const code = row.code;
   const startDate = new Date('2024-09-24');
   const endDate = new Date('2024-11-13');
@@ -861,59 +700,85 @@ const handleRowClick1 = async (row) => {
     resultType.value = true;
 };
 
-// -------------------------------------------------------------------------------
 const activeName1 = ref("near");
-const value1 = ref([store.state.modeInfo.startDate, store.state.modeInfo.endDate]); // 选择的日期范围
-const value2 = ref([searchInfo.searchStartDate, searchInfo.searchEndDate]); // 选择的日期范围
-const value3 = ref([]); // 选择的日期范围
 
-// 监听基准股票日期范围的变化
-watch(value1, () => {
-  store.state.modeInfo.startDate = value1.value[0];
-  store.state.modeInfo.endDate = value1.value[1];
-  value3.value = value1.value;
-  value2.value = value1.value;
-  // tableDataRecent.value = [{
-  //   code: store.state.modeInfo.index,
-  //   name: store.state.modeInfo.name,
-  // }];
-  
+// 确保初始值是 Date 对象或 null
+const value1 = ref([
+  store.state.modeInfo.startDate ? new Date(store.state.modeInfo.startDate) : null,
+  store.state.modeInfo.endDate ? new Date(store.state.modeInfo.endDate) : null
+]);
+
+const value2 = ref([
+  searchInfo.searchStartDate ? new Date(searchInfo.searchStartDate) : null,
+  searchInfo.searchEndDate ? new Date(searchInfo.searchEndDate) : null
+]);
+const value3 = ref([]);
+
+watch(value1, (newVal) => {
+  console.log('[Main copy1.vue] WATCH(value1): Triggered with newVal:', newVal);
+  if (newVal && newVal.length === 2 && newVal[0] instanceof Date && !isNaN(newVal[0].getTime()) && newVal[1] instanceof Date && !isNaN(newVal[1].getTime())) {
+    const formattedStartDate = formatDateToLocal(newVal[0]);
+    const formattedEndDate = formatDateToLocal(newVal[1]);
+    
+    store.state.modeInfo.startDate = formattedStartDate;
+    store.state.modeInfo.endDate = formattedEndDate;
+    value3.value = newVal; 
+    value2.value = newVal; 
+    console.log('[Main copy1.vue] WATCH(value1): Updated modeInfo.startDate/endDate and value2/value3:', { startDate: store.state.modeInfo.startDate, endDate: store.state.modeInfo.endDate });
+  } else {
+    console.warn('[Main copy1.vue] WATCH(value1): Invalid or incomplete date range received. Clearing dates. newVal:', newVal);
+    store.state.modeInfo.startDate = null;
+    store.state.modeInfo.endDate = null;
+    value3.value = [];
+    value2.value = [];
+  }
 });
 
-// 监听带查找股票池日期范围的变化
-watch(searchInfo, () => {
-    value2.value = [searchInfo.searchStartDate, searchInfo.searchEndDate];
+watch(searchInfo, (newVal) => {
+    console.log('[Main copy1.vue] WATCH(searchInfo): Triggered. New searchInfo:', newVal);
+    value2.value = [
+      newVal.searchStartDate ? new Date(newVal.searchStartDate) : null,
+      newVal.searchEndDate ? new Date(newVal.searchEndDate) : null
+    ];
+    console.log('[Main copy1.vue] WATCH(searchInfo): Updated value2:', value2.value);
     if(baseInfo.isHistory === false)
     {
-      tableDataRecent.value = searchInfo.stockList;
+      tableDataRecent.value = newVal.stockList;
+      console.log('[Main copy1.vue] WATCH(searchInfo): baseInfo.isHistory is false, tableDataRecent updated.');
     }
 });
 
 watch(() => store.state.baseInfo.isMode,(newValue) => {
+    console.log('[Main copy1.vue] WATCH(store.state.baseInfo.isMode): Changed to', newValue);
     if (newValue === true && store.state.modeInfo.index === "BA2") {
       resultType.value = false;
       resultMode.value = true;
       resultStock.value = false;
+      console.log('[Main copy1.vue] WATCH(store.state.baseInfo.isMode): Mode changed to BA2, updating result display flags.');
     }
     if(newValue === false){
       resultType.value = true;
       resultMode.value = false;
       resultStock.value = false;
+      console.log('[Main copy1.vue] WATCH(store.state.baseInfo.isMode): Mode is false, updating result display flags.');
     }
   }
 );
 
 watch(() => baseInfo.isChoose,(newValue) => {
+    console.log('[Main copy1.vue] WATCH(baseInfo.isChoose): Changed to', newValue);
     if (newValue === true) {
       resultType.value = false;
       resultMode.value = false;
       resultStock.value = true;
+      console.log('[Main copy1.vue] WATCH(baseInfo.isChoose): isChoose is true, updating result display flags.');
     }
     else
     {
       resultType.value = true;
       resultMode.value = false;
       resultStock.value = false;
+      console.log('[Main copy1.vue] WATCH(baseInfo.isChoose): isChoose is false, updating result display flags.');
     }
   }
 );
@@ -922,69 +787,248 @@ const newStartDate = ref(new Date("2016-01-02"));
 const newEndDate = ref(new Date("2016-06-20"));
 
 function formatDateToLocal(date) {
-  const year = date.getFullYear();
-  // 月份从 0 开始，需要 +1
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
-
-// 时间选择触发刷选+缩放
-function handleDateChange(val) {
-  if (!val || val.length !== 2) return;
-  let [startDate, endDate] = val;
-
-  // 【1】保证 startDate endDate 都转成 'yyyy-MM-dd' 字符串
-  if (startDate instanceof Date) {
-    startDate = formatDateToLocal(startDate);
-    newStartDate.value = startDate;
-    modeInfo.startDate = startDate; // 更新模式信息中的开始日期
+  console.log('[formatDateToLocal]: Input date:', date, '(type:', typeof date, ')');
+  if (!date) {
+    console.warn('[formatDateToLocal] Input date is null or undefined. Returning null.');
+    return null;
   }
-  if (endDate instanceof Date) {
-    endDate = formatDateToLocal(endDate);
-    newEndDate.value = endDate;
-    modeInfo.endDate = endDate; // 更新模式信息中的结束日期
-  }
-}
-
-// 侧边栏宽度状态
-const sidebarWidth = ref(290);
-const minWidth = 330;
-const maxWidth = 570;
-
-// 拖动相关方法
-const startResize = (e) => {
-  e.preventDefault();
-  const startX = e.clientX;
-  const startWidth = sidebarWidth.value;
-
-  const handleResize = (e) => {
-    const newWidth = startWidth + (e.clientX - startX);
-    if (newWidth >= minWidth && newWidth <= maxWidth) {
-      sidebarWidth.value = newWidth;
-    } else if (newWidth < minWidth) {
-      sidebarWidth.value = minWidth;
-    } else if (newWidth > maxWidth) {
-      sidebarWidth.value = maxWidth;
+  
+  let processedDate = date;
+  // 确保 processedDate 是 Date 对象且有效
+  if (!(processedDate instanceof Date) || isNaN(processedDate.getTime())) {
+    console.warn('[formatDateToLocal] Input is not a valid Date object or is an invalid Date. Attempting to parse:', date);
+    try {
+      const parsedDate = new Date(date);
+      if (!isNaN(parsedDate.getTime())) {
+        processedDate = parsedDate;
+        console.log('[formatDateToLocal] Successfully parsed to Date:', processedDate);
+      } else {
+        console.error('[formatDateToLocal] Could not convert to valid Date object from string/invalid input:', date);
+        return null;
+      }
+    } catch (e) {
+      console.error('[formatDateToLocal] Error converting input to Date:', e, 'Returning null.');
+      return null;
     }
-  };
-  const stopResize = () => {
-    document.removeEventListener("mousemove", handleResize);
-    document.removeEventListener("mouseup", stopResize);
-  };
-  document.addEventListener("mousemove", handleResize);
-  document.addEventListener("mouseup", stopResize);
+  }
+
+  const year = processedDate.getFullYear();
+  const month = String(processedDate.getMonth() + 1).padStart(2, '0');
+  const day = String(processedDate.getDate()).padStart(2, '0');
+  const result = `${year}-${month}-${day}`;
+  console.log('[formatDateToLocal] Formatted date result:', result);
+  return result;
+}
+
+// Date selection triggers brush and zoom
+function handleDateChange(val) {
+  console.log('--- [Main copy1.vue] handleDateChange called with raw val:', val);
+  if (!val || val.length !== 2) {
+    console.warn('[Main copy1.vue] handleDateChange: Invalid date range selected (val is null or not an array of two elements). Clearing dates.');
+    selectedDatePreset.value = null;
+    modeInfo.startDate = null;
+    modeInfo.endDate = null;
+    newStartDate.value = null;
+    newEndDate.value = null;
+    console.log('[Main copy1.vue] handleDateChange: ModeInfo after clearing:', { startDate: modeInfo.startDate, endDate: modeInfo.endDate });
+    return;
+  }
+
+  let [startDateRaw, endDateRaw] = val;
+  const startDateFormatted = formatDateToLocal(startDateRaw);
+  const endDateFormatted = formatDateToLocal(endDateRaw);
+  selectedDatePreset.value = null;
+
+  modeInfo.startDate = startDateFormatted;
+  modeInfo.endDate = endDateFormatted;
+  newStartDate.value = startDateFormatted; // 使用格式化后的字符串
+  newEndDate.value = endDateFormatted;     // 使用格式化后的字符串
+}
+
+const setDateRange = (preset) => {
+  console.log('--- [Main copy1.vue] setDateRange called with preset:', preset);
+  const today = new Date();
+  let startDate = new Date();
+  let endDate = new Date();
+
+  switch (preset) {
+    case 'daily':
+      if(graphCode1.value.length > 6)
+        graphCode1.value = graphCode1.value.slice(0, 6);
+      startDate.setDate(today.getDate() - 200);
+      break;
+    case 'weekly':
+      startDate.setMonth(today.getMonth() - 200);
+      if(graphCode1.value.length > 6)
+        graphCode1.value = graphCode1.value.slice(0, 6);
+      graphCode1.value = graphCode1.value + "_week";
+      break;
+    case 'monthly':
+      startDate.setFullYear(today.getFullYear() - 200);
+      if(graphCode1.value.length > 6)
+        graphCode1.value = graphCode1.value.slice(0, 6);
+      graphCode1.value = graphCode1.value + "_month";
+      break;
+    default:
+      console.warn('[Main copy1.vue] setDateRange: Unknown date preset:', preset);
+      break;
+  }
+  value1.value = [startDate, endDate]; 
+  selectedDatePreset.value = preset;
 };
 
-// 计算表格列宽
+const toggleZoomLock = () => {
+  isZoomLocked.value = !isZoomLocked.value;
+  console.log("[Main copy1.vue] isZoomLocked toggled to:", isZoomLocked.value);
+  if (!isZoomLocked.value) {
+    if (graphRef.value) {
+      graphRef.value.clearActiveBrush();
+      console.log('[Main copy1.vue] Calling clearActiveBrush on graphRef.');
+    }
+    activeBrushData.value = null;
+    console.log('[Main copy1.vue] activeBrushData cleared.');
+  }
+};
+
+const handleBrushUpdated = (data) => {
+  activeBrushData.value = data;
+  console.log('Real-time brush data update (received in Main copy1.vue):', activeBrushData.value);
+};
+
+const saveCurrentBrush = () => {
+  console.log('[Main copy1.vue] saveCurrentBrush called.');
+  if (activeBrushData.value && graphRef.value) {
+    // 获取图表DOM元素及其实时位置信息
+    const chartDom = graphRef.value.$refs.chartRef111;
+    if (!chartDom) {
+      console.error('[Main copy1.vue] 未找到图表DOM元素');
+      return;
+    }
+
+    // 提取画框的原始坐标信息（关键修改：从activeBrushData中获取像素位置）
+    const { x0, y0, x1, y1 } = activeBrushData.value;
+    if (x0 === null || y0 === null || x1 === null || y1 === null) {
+      console.warn('[Main copy1.vue] 画框位置信息不完整，请检查画框绘制逻辑');
+      // 尝试从图表库中重新获取（以ECharts为例，根据实际库调整）
+      const brushAreas = graphRef.value.getBrushAreas?.(); // 假设图表实例有此方法
+      if (brushAreas?.length) {
+        const [area] = brushAreas;
+        activeBrushData.value.x0 = area.x0;
+        activeBrushData.value.y0 = area.y0;
+        activeBrushData.value.x1 = area.x1;
+        activeBrushData.value.y1 = area.y1;
+        console.log('[Main copy1.vue] 从图表库中补充获取位置信息:', activeBrushData.value);
+      } else {
+        console.error('[Main copy1.vue] 无法获取画框位置，保存失败');
+        return;
+      }
+    }
+
+    // 计算画框在页面中的绝对像素位置（结合图表DOM的位置校准）
+    const chartRect = chartDom.getBoundingClientRect();
+    const absolutePosition = {
+      start: {
+        x: chartRect.left + activeBrushData.value.x0, // 相对图表的x0 + 图表左偏移
+        y: chartRect.top + activeBrushData.value.y0   // 相对图表的y0 + 图表上偏移
+      },
+      end: {
+        x: chartRect.left + activeBrushData.value.x1,
+        y: chartRect.top + activeBrushData.value.y1
+      },
+      width: activeBrushData.value.x1 - activeBrushData.value.x0,
+      height: activeBrushData.value.y1 - activeBrushData.value.y0
+    };
+
+    const timestamp = new Date().getTime();
+    // 打印验证位置信息
+    console.log('[Main copy1.vue] 画框像素位置:', {
+      相对图表位置: { x0: activeBrushData.value.x0, y0: activeBrushData.value.y0, x1: activeBrushData.value.x1, y1: activeBrushData.value.y1 },
+      页面绝对位置: absolutePosition
+    });
+
+    // 截图并保存（保留原有截图逻辑）
+    // 在saveCurrentBrush函数的html2canvas回调中修改
+    html2canvas(chartDom, {
+      useCORS: true,
+      scale: 2,
+      logging: false,
+      // 增加超时设置，避免无限等待
+      timeout: 10000
+    }).then(canvas => {
+      if (!canvas) {
+        console.error('[Main copy1.vue] 生成canvas失败');
+        return;
+      }
+      
+      // 1. 使用toBlob替代toDataURL，更高效
+      canvas.toBlob(blob => {
+        if (!blob) {
+          console.error('[Main copy1.vue] 转换为Blob失败');
+          return;
+        }
+        
+        // 2. 定义文件名（使用时间戳确保唯一）
+        const fileName = `${graphCode1.value}_brush_${new Date().getTime()}.png`;
+        
+        // 3. 创建FormData对象
+        const formData = new FormData();
+        formData.append('file', blob, fileName);
+        
+        // 4. 发送到后端保存
+        axios.post(`http://127.0.0.1:5000/save_screenshot?timestamp=${timestamp}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          },
+          timeout: 15000, // 设置请求超时时间
+          onUploadProgress: progressEvent => {
+            // 可选：添加上传进度显示
+            const percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            console.log(`[Main copy1.vue] 上传进度: ${percentCompleted}%`);
+          }
+        }).then(response => {
+          if (response.data && response.data.success) {
+            console.log(`[Main copy1.vue] 截图已保存到服务器: public/savepng/${fileName}`);
+            // 可以在这里添加成功提示
+          } else {
+            console.error('[Main copy1.vue] 截图保存失败:', response.data?.msg || '未知错误');
+          }
+        }).catch(err => {
+          console.error('[Main copy1.vue] 发送截图到服务器失败:', 
+            err.response?.data?.msg || err.message || err);
+        });
+      }, 'image/png'); // 指定MIME类型为png
+
+    }).catch(err => {
+      console.error('[Main copy1.vue] 截图失败:', err.message || err);
+    });
+
+
+    // 保存画框数据（包含位置信息）
+    savedBrushAreas.value.push({
+      ...activeBrushData.value,
+      absolutePosition: absolutePosition, // 新增绝对位置信息
+      timestamp: new Date().getTime()
+    });
+    console.log('保存的画框数据（含位置）:', savedBrushAreas.value);
+
+    graphRef.value.clearActiveBrush();
+    activeBrushData.value = null;
+  } else {
+    console.warn('[Main copy1.vue] 没有可保存的画框数据');
+  }
+};
+
+const sidebarWidth = ref(290);
+
 const getColumnWidth = (percentage) => {
   return (sidebarWidth.value - 30) * percentage;
 };
 
-// 监听侧边栏宽度变化，强制更新表格
 watch(sidebarWidth, () => {
+  console.log('[Main copy1.vue] Watch: sidebarWidth changed.');
   nextTick(() => {
-    // 触发表格重新渲染
     const currentPage = document.getElementById("current-page");
     if (currentPage) {
       const tables = currentPage.querySelectorAll(".el-table__header-wrapper");
@@ -992,150 +1036,44 @@ watch(sidebarWidth, () => {
         const event = new Event("resize");
         window.dispatchEvent(event);
       });
+      console.log('[Main copy1.vue] Dispatched resize events for tables.');
     }
   });
 });
 
-
-// const handleTourChange = async (current, prev) => {
-//   // STEP 1: 自动点击"设置基准股票"按钮
-//   if (current === 1) {
-//     handleAnalyze();
-
-//     // 等待 DOM 更新完毕
-//     await nextTick();
-
-//     // 再延迟进入 Step 2
-//     setTimeout(() => {
-//       tourStep.value = 2;
-//     }, 3000); // 建议 2~3 秒最合适
-//   }
-
-//   // STEP 4.1: 自动点击"自定义模式评价"按钮，并延迟跳转到下一个step
-//   if (current === 11) {
-//     const customEvaluationButton = document.querySelector('.custom-evaluation-button');
-//     if (customEvaluationButton) {
-//       customEvaluationButton.click();
-//       await nextTick();
-//       setTimeout(() => {
-//         tourStep.value = 12; // 跳转到下一个step
-//       }, 800);
-//     }
-//   }
-
-//   // STEP 4.2.1: 自动点击"本股票历史行情"按钮，并延迟跳转到下一个step
-//   if (current === 13) {
-//     const customEvaluationButton = document.querySelector('.custom-evaluation-button-4-2-2');
-//     if (customEvaluationButton) {
-//       customEvaluationButton.click();
-//       await nextTick();
-//     }
-//   }
-
-//   if (current === 15) {
-//     const customEvaluationButton = document.querySelector('.btn-search-range');
-//     if (customEvaluationButton) {
-//       customEvaluationButton.click();
-//       await nextTick();
-//     }
-//   }
-
-//   // STEP 4.3: 自动点击相似模式选股按钮，并延迟点击"请选择待查找股票集合"按钮
-//   if (current === 16) {
-//     const similarModeBtn = document.querySelector('.custom-evaluation-button-4-3');
-//     if (similarModeBtn) {
-//       similarModeBtn.click();
-//       await nextTick();
-//       setTimeout(() => {
-//         const searchRangeBtn = document.querySelector('.btn-search-range');
-//         if (searchRangeBtn) {
-//           searchRangeBtn.click();
-//           tourStep.value = 17; // 跳转到下一个step
-//         }
-//       }, 800); // 可根据需要调整延迟
-//     }
-//   }
-// };
-
 function handleDateChange2(val) {
-  if (!val || val.length !== 2) return;
-  let [startDate, endDate] = val;
-  if (startDate instanceof Date) {
-    startDate = formatDateToLocal(startDate);
-    newStartDate.value = startDate;
-    searchInfo.searchStartDate = startDate; // 更新模式信息中的开始日期
+  console.log('--- [Main copy1.vue] handleDateChange2 called with raw val:', val);
+  if (!val || val.length !== 2) {
+    console.warn('[Main copy1.vue] handleDateChange2: Invalid date range for search pool selected. Clearing dates.');
+    searchInfo.searchStartDate = null;
+    searchInfo.searchEndDate = null;
+    newStartDate.value = null;
+    newEndDate.value = null;
+    console.log('[Main copy1.vue] handleDateChange2: SearchInfo after clearing:', { startDate: searchInfo.searchStartDate, endDate: searchInfo.searchEndDate });
+    return;
   }
-  if (endDate instanceof Date) {
-    endDate = formatDateToLocal(endDate);
-    newEndDate.value = endDate;
-    searchInfo.searchEndDate = endDate; // 更新模式信息中的结束日期
-  }
+  let [startDateRaw, endDateRaw] = val;
+
+  console.log(`[Main copy1.vue] handleDateChange2 - startDateRaw:`, startDateRaw, `(type: ${typeof startDateRaw}, instanceof Date: ${startDateRaw instanceof Date}, isNaN(getTime()): ${startDateRaw instanceof Date ? isNaN(startDateRaw.getTime()) : 'N/A'})`);
+  console.log(`[Main copy1.vue] handleDateChange2 - endDateRaw:`, endDateRaw, `(type: ${typeof endDateRaw}, instanceof Date: ${endDateRaw instanceof Date}, isNaN(getTime()): ${endDateRaw instanceof Date ? isNaN(endDateRaw.getTime()) : 'N/A'})`);
+
+  const startDateFormatted = formatDateToLocal(startDateRaw);
+  const endDateFormatted = formatDateToLocal(endDateRaw);
+
+  console.log(`[Main copy1.vue] handleDateChange2 - After formatDateToLocal - startDateFormatted:`, startDateFormatted);
+  console.log(`[Main copy1.vue] handleDateChange2 - After formatDateToLocal - endDateFormatted:`, endDateFormatted);
+
+  searchInfo.searchStartDate = startDateFormatted;
+  searchInfo.searchEndDate = endDateFormatted;
+  newStartDate.value = startDateFormatted; // 使用格式化后的字符串
+  newEndDate.value = endDateFormatted;     // 使用格式化后的字符串
+
+  console.log('[Main copy1.vue] handleDateChange2: FINAL SearchInfo dates updated:', { startDate: searchInfo.searchStartDate, endDate: searchInfo.searchEndDate });
+  console.log('--- [Main copy1.vue] handleDateChange2 END ---');
 }
 
-const handleModeTourChange = async (current, prev) => {
-  // STEP 1: 自动点击推荐模式卡片标题，弹出弹窗
-  if (current === 1) {
-    const card = document.querySelector('.mode-card-title');
-    if (card) {
-      card.click();
-    }
-    setTimeout(() => {
-      modeTourStep.value = 1; // 保证 el-tour 继续在第二步
-    }, 9999);
-  }
-  // STEP 2: 自动点击应用推荐模式按钮，并延迟跳转到下一个step
-  if (current === 2) {
-    const applyModeBtn = document.querySelector('.apply-mode-btn-step2');
-    if (applyModeBtn) {
-      applyModeBtn.click();
-      await nextTick();
-      setTimeout(() => {
-        modeTourStep.value = 3; // 跳转到下一个step
-      }, 800); // 可根据需要调整延迟
-    }
-  }
-  // 自定义模式评价
-  if (current === 11) {
-    const customEvaluationButton = document.querySelector('.custom-evaluation-button');
-    if (customEvaluationButton) {
-      customEvaluationButton.click();
-      await nextTick();
-    }
-  }
-  // 多股票横向查找
-  if (current === 12) {
-    const customEvaluationButton = document.querySelector('.btn-search-range');
-    if (customEvaluationButton) {
-      customEvaluationButton.click();
-      await nextTick();
-    }
-  }
-
-  // STEP 4.3: 自动点击相似模式选股按钮，并延迟点击"请选择待查找股票集合"按钮
-  if (current === 15) {
-    const similarModeBtn = document.querySelector('.custom-evaluation-button-4-3');
-    if (similarModeBtn) {
-      similarModeBtn.click();
-      await nextTick();
-      setTimeout(() => {
-        const searchRangeBtn = document.querySelector('.btn-search-range');
-        if (searchRangeBtn) {
-          searchRangeBtn.click();
-          tourStep.value = 17; // 跳转到下一个step
-        }
-      }, 800); // 可根据需要调整延迟
-    }
-  }
-};
-
-// 计算涨跌颜色和样式
-const upColor = '#ec0000'; // 红色
-const downColor = '#00da3c'; // 绿色
-const isUp = computed(() => {
-  // 只要value或ratio有+号或为正数就认为是涨
-  const v = stockShowInfo.value?.value || stockShowInfo.value?.ratio || '';
-  return (typeof v === 'string' && v.includes('+')) || (parseFloat(v) > 0);
-});
+const upColor = '#ec0000';
+const downColor = '#00da3c';
 const valueColor = computed(() => {
   const v = stockShowInfo.value?.value || '';
   if (typeof v === 'string' && v.includes('-')) return downColor;
@@ -1152,4 +1090,43 @@ const ratioColor = computed(() => {
 </script>
 
 <style src="@/styles/basic.css">
-</style>   
+
+.image-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 20px;
+}
+
+.screenshot-img {
+  max-width: 200px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+}
+
+.screenshot-img:hover {
+  transform: scale(1.02);
+}
+
+.image-name {
+  margin: 5px 0 0 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.empty-state {
+  width: 100%;
+  text-align: center;
+  padding: 40px;
+  color: #999;
+}
+
+.loading-state {
+  width: 100%;
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+</style>
