@@ -6,7 +6,7 @@
       </el-container>
       <el-container style="height: 94vh;">
         <el-aside>
-          <div style="height: 340px; background-color: #f3f3f3; border-radius: 10px; margin-top: 5px; margin-left: 5px;">
+          <div style="height: 440px; background-color: #f3f3f3; border-radius: 10px; margin-top: 5px; margin-left: 5px;">
             <el-tabs
               class="custom-tabs" v-model="activeName1" style="margin-left: 10px; width: 275px; "
             >
@@ -19,7 +19,7 @@
                 <el-table
                   :data="filteredTableData1(item)"
                   class="scrollable-div"
-                  max-height="240"
+                  max-height="335"
                   style="border-radius: 8px;"
                   border
                 >
@@ -80,12 +80,12 @@
                 <el-table
                   :data="filteredTableData2(item)"
                   style="
-                    height: 230px;
+                    height: 335px;
                     font-size: 12px;
                     margin-top: 5px;
                     border-radius: 8px;
                   "
-                  max-height="230"
+                  max-height="335"
                   border
                 >
                   <el-table-column
@@ -140,32 +140,42 @@
             </el-tabs>
           </div>
 
-          <div class="scrollable-div" style="height: 340px; background-color: #f3f3f3; margin-top: 5px; border-radius: 10px;margin-left: 5px; overflow-y: auto;">
+          <div class="scrollable-div" style="height: 240px; background-color: #f3f3f3; margin-top: 5px; border-radius: 10px;margin-left: 5px; overflow-y: auto;">
             <div style="height: auto;">
-              
-              <div class="div4 stock-mode-step2" style="margin-left: 15px; width: 130px; margin-top: 10px;">基准股票时间区间设置</div>
-                <div>
-                  <el-date-picker
-                    v-model="value1"
-                    type="daterange"
-                    range-separator="To"
-                    start-placeholder="Start date"
-                    end-placeholder="End date"
-                    size="small"
-                    style="
-                      width: calc(100% - 50px);
-                      margin-top: 5px;
-                      margin-left: -7px;
-                    "
-                    @change="handleDateChange"/>
+              <div class="div5 tour-ma-config">
+                <div
+                  style="
+                    font-size: 13px;
+                    font-weight: bold;
+                    margin-left: -160px;
+                    margin-top: 5px;
+                  "
+                >
+                  基础 MA 指标设置:
                 </div>
-              <div v-if="isChooseStock" style="display: flex; margin-left: -25px; margin-top: -10px;">
+                <el-checkbox-group
+                  v-model="store.state.modeInfo.lines"
+                  class="custom-checkbox-group"
+                  style="margin-top: 5px; margin-left: 15px;"
+                >
+                  <el-checkbox
+                    v-for="item in maList"
+                    :key="item"
+                    :label="item"
+                    :value="item"
+                    class="custom-checkbox"
+                  ></el-checkbox>
+                </el-checkbox-group>
+              </div>
+
+              <div v-if="isChooseStock" style="display: flex; margin-left: -25px; margin-top: -5px;">
                 <div class="div2">选股考察区间：</div>
                 <el-select
-                  v-model="value"
+                  v-model="recentNDaysValue"
                   placeholder="请选择查找区间"
                   size="small"
                   style="width: 168px; margin-left: -35px; margin-top: 17px;"
+                  @change="handleRecentNDaysChange"
                 >
                   <el-option
                     v-for="item in options"
@@ -213,35 +223,9 @@
               </div>
 
 
-              <div class="div5 tour-ma-config">
-                <div
-                  style="
-                    font-size: 13px;
-                    font-weight: bold;
-                    margin-left: -180px;
-                    margin-top: 5px;
-                  "
-                >
-                  基础 MA 指标:
-                </div>
-                <el-checkbox-group
-                  v-model="store.state.modeInfo.lines"
-                  class="custom-checkbox-group"
-                  style="margin-top: 0px; margin-left: 15px;"
-                >
-                  <el-checkbox
-                    v-for="item in maList"
-                    :key="item"
-                    :label="item"
-                    :value="item"
-                    class="custom-checkbox"
-                  ></el-checkbox>
-                </el-checkbox-group>
-              </div>
-
-              <div style="margin-left: -10px; margin-top: 15px; margin-bottom: 10px;">
-                <el-button @click="getShowDialog" type="primary" plain style="font-size: 13px; height: 26px; width: 120px;" >配置确认</el-button>
-                <el-button type="primary" plain style="margin-left: 5px; font-size: 13px; height: 26px; width: 120px;" @click="getResult">开始查找</el-button>
+              <div style="margin-left: -8px; margin-top: 15px; margin-bottom: 10px;">
+                <el-button @click="getShowDialog" type="primary" plain style="font-size: 13px; height: 24px; width: 132px;" >配置确认</el-button>
+                <el-button type="primary" plain style="margin-left: 5px; font-size: 13px; height: 24px; width: 132px;" @click="getResult">开始查找</el-button>
               </div>
               <DialogBullish
                 :visible ="showDialog"
@@ -415,7 +399,7 @@
                   @brush-updated="handleBrushUpdated" 
                   :savedBrushes="savedBrushAreas"
                 /> 
-              <div style="border: 1px solid #ededed; height: 140px; width: 90%; margin-top: -160px; margin-left: 80px; border-radius: 5px; overflow: hidden;">
+              <div style="border: 1px solid #cbcbcb; height: 140px; width: 90%; margin-top: -160px; margin-left: 80px; border-radius: 5px; overflow: hidden;">
                 <!-- 为图片列表添加容器并应用Flex布局 -->
                 <div style="display: flex; height: 100%; align-items: center; padding: 0 15px; overflow-x: auto; scrollbar-width: thin;">
                   <div v-for="img in imageList" :key="img.filename" class="image-gallery" style="margin-right: 15px; flex-shrink: 0;">
@@ -446,11 +430,18 @@
             <el-button size="small" @click="setDateRange('weekly')">周线</el-button>
             <el-button size="small" @click="setDateRange('monthly')">月线</el-button>
             <el-button size="small" @click="toggleZoomLock">
-              {{ isZoomLocked ? '取消标记' : '画框标记' }}
+              {{ isZoomLocked ? '取消锁定' : '锁定缩放比' }}
             </el-button>
             <el-button size="small" @click="saveCurrentBrush" :disabled="!activeBrushData"> 保存当前标记
             </el-button>
             <el-button size="small" @click="getAllImages()">刷新选取结果</el-button>
+            <el-button 
+              size="small" 
+              type="danger" 
+              @click="deleteServerFiles"
+            >
+              清空选取结果
+            </el-button>
           </div>
           <hr style="margin-top:10px; margin-bottom: 0px;"/>
           <ResultShow v-if="resultType"/>
@@ -467,6 +458,10 @@ import axios from "axios";
 import { useStore } from "vuex";
 import { StarFilled, Star } from '@element-plus/icons-vue';
 import html2canvas from 'html2canvas';
+// 在 <script setup> 部分添加导入
+import { ElMessageBox } from 'element-plus';
+import { ElMessage } from 'element-plus'; // 同时导入消息提示组件（如果用到）
+
 
 import ModeCards from "@/views/ModeCards.vue";
 import ResultShow from "@/views/ResultShow.vue";
@@ -474,7 +469,7 @@ import Graph from "@/views/Graph.vue";
 import DialogBullish from "@/views/DialogBullish.vue";
 import DialogChoose2 from "@/views/DialogChoose2.vue";
 
-const value = ref('')
+const recentNDaysValue = ref('') 
 const isGetResult = ref(false);
 const isGetResult2 = ref(false);
 const isZoomLocked = ref(false);
@@ -489,6 +484,11 @@ const options = [
   { value: '近30天', label: '近30天' },
   { value: '近40天', label: '近40天' },
 ]
+
+// 处理查找区间选择变化
+const handleRecentNDaysChange = (value) => {
+    console.log('通过v-model获取的选中值:', recentNDaysValue.value);
+};
 
 const showDialog = ref(false);
 
@@ -524,22 +524,52 @@ const resetBaseInfo = () => {
   baseInfo.isChoose = false;
 };
 
-// 定义响应式数据
+
+// 调用后端接口删除
+const deleteServerFiles = () => {
+  ElMessageBox.confirm(
+    '确定要删除服务器上的指定文件夹数据吗？此操作不可恢复。',
+    '警告',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }
+  ).then(async () => {
+    try {
+      const API_BASE_URL = 'http://127.0.0.1:5000';
+      // const timestamp = new Date().getTime();
+      const response = await axios.post(`${API_BASE_URL}/delete-files`, {
+        folderPath: '/public/savepng' // 后端需要处理的文件夹路径
+      });
+      
+      if (response.data.success) {
+        ElMessage.success('服务器文件夹数据已成功删除');
+        // 可选：刷新数据列表
+        fetchImages(); // 例如重新获取图片列表，刷新视图
+      } else {
+        ElMessage.error('删除失败：' + response.data.msg);
+      }
+    } catch (err) {
+      console.error('删除请求失败：', err);
+      ElMessage.error('删除操作失败，请重试');
+    }
+  }).catch(() => {
+    ElMessage.info('已取消删除操作');
+  });
+};
+
+
 const imageList = ref([]);
 const loading = ref(true);
-
-// 图片加载失败处理函数
 const handleImageError = (img) => {
-  // 可以替换为占位图地址
   img.url = 'https://picsum.photos/300/200?grayscale&blur=2';
 };
 
 // 获取图片列表函数（修改版）
 const fetchImages = async () => {
   const timestamp = new Date().getTime();
-  // 后端API基础地址（建议配置在环境变量中）
   const API_BASE_URL = 'http://127.0.0.1:5000';
-  
   try {
     loading.value = true;
     const response = await axios.get(`${API_BASE_URL}/get_all_screenshots?timestamp=${timestamp}`);
@@ -574,17 +604,6 @@ onMounted(() => {
 const getAllImages = () =>{
   fetchImages();
 }
-
-
-const getButtonType = (weight) => {
-  switch (weight) {
-    case 3: return 'danger';
-    case 2: return 'warning';
-    case 1: return 'success';
-    case 0: return 'primary';
-    default: return 'default';
-  }
-};
 
 const toggleFavorite = () => {
   const code = stockShowInfo.value?.code;
@@ -666,6 +685,21 @@ const getResult = async() => {
   {
     isGetResult2.value = true;
   }
+  // 关键修改：只打印已保存的画框时间区间
+  console.log('===== 开始查找 - 已保存的画框时间区间 =====');
+  if (savedBrushTimeRanges.value.length > 0) {
+    savedBrushTimeRanges.value.forEach((range, index) => {
+      console.log(`保存的区间 ${index + 1}:`);
+      console.log(`  股票代码: ${range.code}`);
+      console.log(`  起始时间: ${range.startDate}`);
+      console.log(`  终止时间: ${range.endDate}`);
+      console.log(`  保存时间: ${new Date(range.saveTime).toLocaleString()}`);
+    });
+  } else {
+    console.log('没有已保存的画框时间区间');
+  }
+  console.log('近N天:', recentNDaysValue.value);
+  console.log('========================================');
 };
 
 const handleRowClick = async (row) => {
@@ -895,64 +929,66 @@ const handleBrushUpdated = (data) => {
   console.log('Real-time brush data update (received in Main copy1.vue):', activeBrushData.value);
 };
 
+
+
+// 在现有ref定义区域添加
+const savedBrushTimeRanges = ref([]); // 仅存储已保存的画框时间区间
+
 const saveCurrentBrush = () => {
   console.log('[Main copy1.vue] saveCurrentBrush called.');
+  // 确保使用最新的实时画框数据
   if (activeBrushData.value && graphRef.value) {
-    // 获取图表DOM元素及其实时位置信息
+    console.log('[Main copy1.vue] 保存实时画框数据:', activeBrushData.value);
+    
+    // 获取图表DOM元素
     const chartDom = graphRef.value.$refs.chartRef111;
     if (!chartDom) {
       console.error('[Main copy1.vue] 未找到图表DOM元素');
       return;
     }
 
-    // 提取画框的原始坐标信息（关键修改：从activeBrushData中获取像素位置）
-    const { x0, y0, x1, y1 } = activeBrushData.value;
-    if (x0 === null || y0 === null || x1 === null || y1 === null) {
-      console.warn('[Main copy1.vue] 画框位置信息不完整，请检查画框绘制逻辑');
-      // 尝试从图表库中重新获取（以ECharts为例，根据实际库调整）
-      const brushAreas = graphRef.value.getBrushAreas?.(); // 假设图表实例有此方法
-      if (brushAreas?.length) {
-        const [area] = brushAreas;
-        activeBrushData.value.x0 = area.x0;
-        activeBrushData.value.y0 = area.y0;
-        activeBrushData.value.x1 = area.x1;
-        activeBrushData.value.y1 = area.y1;
-        console.log('[Main copy1.vue] 从图表库中补充获取位置信息:', activeBrushData.value);
-      } else {
-        console.error('[Main copy1.vue] 无法获取画框位置，保存失败');
-        return;
-      }
+    // 从实时画框数据中获取最新位置信息
+    const { pixelPosition, startDate, endDate, type } = activeBrushData.value;
+    
+    // 计算绝对位置（如果有像素位置信息）
+    let absolutePosition = null;
+    if (pixelPosition) {
+      const chartRect = chartDom.getBoundingClientRect();
+      absolutePosition = {
+        x: chartRect.left + pixelPosition.x,
+        y: chartRect.top + pixelPosition.y,
+        width: pixelPosition.width,
+        height: pixelPosition.height
+      };
     }
 
-    // 计算画框在页面中的绝对像素位置（结合图表DOM的位置校准）
-    const chartRect = chartDom.getBoundingClientRect();
-    const absolutePosition = {
-      start: {
-        x: chartRect.left + activeBrushData.value.x0, // 相对图表的x0 + 图表左偏移
-        y: chartRect.top + activeBrushData.value.y0   // 相对图表的y0 + 图表上偏移
-      },
-      end: {
-        x: chartRect.left + activeBrushData.value.x1,
-        y: chartRect.top + activeBrushData.value.y1
-      },
-      width: activeBrushData.value.x1 - activeBrushData.value.x0,
-      height: activeBrushData.value.y1 - activeBrushData.value.y0
-    };
-
     const timestamp = new Date().getTime();
-    // 打印验证位置信息
-    console.log('[Main copy1.vue] 画框像素位置:', {
-      相对图表位置: { x0: activeBrushData.value.x0, y0: activeBrushData.value.y0, x1: activeBrushData.value.x1, y1: activeBrushData.value.y1 },
-      页面绝对位置: absolutePosition
+    
+    // 保存画框数据（使用实时更新的位置信息）
+    savedBrushAreas.value.push({
+      type: type || 'lineX',
+      startDate: startDate,
+      endDate: endDate,
+      pixelPosition: pixelPosition,
+      absolutePosition: absolutePosition,
+      saveTime: timestamp, // 记录保存时间
+      lastUpdatedTime: timestamp // 记录最后更新时间（与保存时间一致）
+    });
+    
+    console.log('已保存的实时画框数据:', savedBrushAreas.value[savedBrushAreas.value.length - 1]);
+    const cur = savedBrushAreas.value[savedBrushAreas.value.length - 1];
+    savedBrushTimeRanges.value.push({
+      code: graphCode1.value,
+      startDate: cur.startDate,
+      endDate: cur.endDate,
+      saveTime: cur.saveTime
     });
 
     // 截图并保存（保留原有截图逻辑）
-    // 在saveCurrentBrush函数的html2canvas回调中修改
     html2canvas(chartDom, {
       useCORS: true,
       scale: 2,
       logging: false,
-      // 增加超时设置，避免无限等待
       timeout: 10000
     }).then(canvas => {
       if (!canvas) {
@@ -960,37 +996,26 @@ const saveCurrentBrush = () => {
         return;
       }
       
-      // 1. 使用toBlob替代toDataURL，更高效
       canvas.toBlob(blob => {
         if (!blob) {
           console.error('[Main copy1.vue] 转换为Blob失败');
           return;
         }
         
-        // 2. 定义文件名（使用时间戳确保唯一）
-        const fileName = `${graphCode1.value}_brush_${new Date().getTime()}.png`;
-        
-        // 3. 创建FormData对象
+        const fileName = `${graphCode1.value}_brush_${timestamp}.png`;
         const formData = new FormData();
         formData.append('file', blob, fileName);
         
-        // 4. 发送到后端保存
         axios.post(`http://127.0.0.1:5000/save_screenshot?timestamp=${timestamp}`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          },
-          timeout: 15000, // 设置请求超时时间
+          headers: { 'Content-Type': 'multipart/form-data' },
+          timeout: 15000,
           onUploadProgress: progressEvent => {
-            // 可选：添加上传进度显示
-            const percentCompleted = Math.round(
-              (progressEvent.loaded * 100) / progressEvent.total
-            );
+            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
             console.log(`[Main copy1.vue] 上传进度: ${percentCompleted}%`);
           }
         }).then(response => {
           if (response.data && response.data.success) {
             console.log(`[Main copy1.vue] 截图已保存到服务器: public/savepng/${fileName}`);
-            // 可以在这里添加成功提示
           } else {
             console.error('[Main copy1.vue] 截图保存失败:', response.data?.msg || '未知错误');
           }
@@ -998,21 +1023,12 @@ const saveCurrentBrush = () => {
           console.error('[Main copy1.vue] 发送截图到服务器失败:', 
             err.response?.data?.msg || err.message || err);
         });
-      }, 'image/png'); // 指定MIME类型为png
-
+      }, 'image/png');
     }).catch(err => {
       console.error('[Main copy1.vue] 截图失败:', err.message || err);
     });
 
-
-    // 保存画框数据（包含位置信息）
-    savedBrushAreas.value.push({
-      ...activeBrushData.value,
-      absolutePosition: absolutePosition, // 新增绝对位置信息
-      timestamp: new Date().getTime()
-    });
-    console.log('保存的画框数据（含位置）:', savedBrushAreas.value);
-
+    // 清除当前激活的画框
     graphRef.value.clearActiveBrush();
     activeBrushData.value = null;
   } else {

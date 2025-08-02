@@ -305,20 +305,35 @@ const fetchDataAndUpdateChart = async () => {
             brushElement = myChart.getDom().querySelector('.ec-brush > path');
           }
 
+          // 替换原像素位置计算逻辑，不依赖DOM元素，直接通过坐标转换获取
           let pixelPosition = null;
-          if (brushElement) {
+          if (selectedArea.brushType === 'lineX') {
+            // 对于lineX类型，通过坐标系统计算位置
+            const xAxis = myChart.getModel().getComponent('xAxis', 0);
+            const grid = myChart.getModel().getComponent('grid', 0);
+            if (xAxis && grid && grid.coordinateSystem) {
+              const startX = myChart.convertToPixel({ xAxisIndex: 0 }, selectedArea.coordRange[0]);
+              const endX = myChart.convertToPixel({ xAxisIndex: 0 }, selectedArea.coordRange[1]);
+              const gridRect = grid.coordinateSystem.getRect();
+              
+              pixelPosition = {
+                x: Math.min(startX, endX),
+                y: gridRect.y,
+                width: Math.abs(endX - startX),
+                height: gridRect.height
+              };
+              console.log(`[Graph.vue] Calculated lineX pixelPosition:`, pixelPosition);
+            }
+          } else if (selectedArea.brushType === 'rect' && brushElement) {
+            // 保留原rect类型的计算逻辑
             const bbox = brushElement.getBoundingClientRect();
             const chartRect = myChart.getDom().getBoundingClientRect();
-            // 计算相对于图表容器的位置
             pixelPosition = {
               x: bbox.left - chartRect.left,
               y: bbox.top - chartRect.top,
               width: bbox.width,
               height: bbox.height
             };
-            console.log(`[Graph.vue] Calculated pixelPosition for ${selectedArea.brushType}:`, pixelPosition);
-          } else {
-            console.warn(`[Graph.vue] No brush element found for type ${selectedArea.brushType}`);
           }
 
           let brushInfo;
@@ -336,7 +351,8 @@ const fetchDataAndUpdateChart = async () => {
               yRange: [startYValue, endYValue],
               pixelPosition: pixelPosition
             };
-          } else { // brushType === 'lineX'
+          }
+          else { // brushType === 'lineX'
             const startDataIndex = selectedArea.coordRange[0];
             const endDataIndex = selectedArea.coordRange[1];
             

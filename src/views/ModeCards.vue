@@ -15,6 +15,9 @@
     <el-tabs v-model="activeName3" style="margin-left: 20px; width: 220px; height: 570px;">
       <el-tab-pane label="相似性查找模式" name="index">
         <div class="scrollable-div">
+          <el-card style="height: 60px; width: 210px; margin-bottom: 10px;" @click="handleCardClick1()">
+            <span style="margin-top: -60px; font-size: 13px; font-weight: bold; cursor: pointer;">自定义模式</span>
+          </el-card>
           <el-card
             v-for="(item, index) in modeList"
             :key="index"
@@ -217,6 +220,17 @@ const handleCardClick = (item, index) => {
       isConsecutive: item.isConsecutive,
     }]
 };
+
+const handleCardClick1 = (item, index) => {
+    store.commit("updateBaseInfo", {
+    isMode: true,
+    isStock: false,
+    isDisabled: true,
+    isHistorySearch: false,
+    isChooseStock: true,
+  });
+};
+
 
 // 定义公共的系列配置
 const commonSeriesConfig = {

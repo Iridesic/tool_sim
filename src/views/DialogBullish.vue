@@ -12,16 +12,15 @@
       style="margin-top: 60px;"
       class="modecards-dialog-tour"
     >
-      <span>多头排列模式</span>
+      <span>多头排列模式相似度问答</span>
       <hr />
 
       <!-- 多头排列基本信息表格 -->
-      <div style="display: flex; align-items: center; font-size: 13px; color:#000000; padding: 1px; width: 800px; margin-left: 0px; margin-top: 10px;">
-        <span style="flex: 1;">——————————————— 相似度问答 ————————————————</span>
+      <div style="display: flex; align-items: center; font-size: 13px; color:#000000; padding: 1px; width: 800px; margin-left: 0px; margin-top: -40px;">
+        <span style="flex: 1;"></span>
         <el-tooltip content="切换问答类型" placement="top">
           <el-button @click="toggleQaMode" circle size="small" type="primary" style="margin-left: 8px;">
             <template #icon>
-              <!-- 根据 qaMode 动态切换图标：'image' 显示图片图标，'text' 显示编辑图标 -->
               <i :class="qaMode === 'image' ? 'el-icon-picture' : 'el-icon-edit'" />
             </template>
           </el-button>
@@ -34,7 +33,7 @@
           <div v-if="currentCard === 1">
             <!-- 图片问答轮播图 - 仅当 qaMode 为 'image' 时显示 -->
             <el-carousel :interval="200000" arrow="always" style="width:100%; height: 400px;" v-if="qaMode === 'image'">
-              <!-- 第一个轮播项（原始参考项） -->
+              <!-- 第一个轮播项 -->
               <el-carousel-item>
                 <div style="color: black; font-size: 13px; margin-bottom: 10px; margin-top: 10px;">以下两张图片的框选区域是否相似？</div>
                 <el-table :data="tableData1" style="font-size: 12px; margin-top: 5px; margin-left: 7px; width: 760px;" class="custom-table-header">
@@ -59,7 +58,7 @@
                 </div>
               </el-carousel-item>
 
-              <!-- 第二个轮播项（统一样式） -->
+              <!-- 第二个轮播项 -->
               <el-carousel-item>
                 <div style="color: black; font-size: 13px; margin-bottom: 10px; margin-top: 10px;">以下两张图片的框选区域是否相似？</div>
                 <el-table :data="tableData1" style="font-size: 12px; margin-top: 5px; margin-left: 7px; width: 760px;" class="custom-table-header">
@@ -84,7 +83,7 @@
                 </div>
               </el-carousel-item>
 
-              <!-- 第三个轮播项（统一样式） -->
+              <!-- 第三个轮播项 -->
               <el-carousel-item>
                 <div style="color: black; font-size: 13px; margin-bottom: 10px; margin-top: 10px;">以下两张图片的框选区域是否相似？</div>
                 <el-table :data="tableData1" style="font-size: 12px; margin-top: 5px; margin-left: 7px; width: 760px;" class="custom-table-header">
@@ -109,7 +108,7 @@
                 </div>
               </el-carousel-item>
 
-              <!-- 第四个轮播项（统一样式） -->
+              <!-- 第四个轮播项 -->
               <el-carousel-item>
                 <div style="color: black; font-size: 13px; margin-bottom: 10px; margin-top: 10px;">以下两张图片的框选区域是否相似？</div>
                 <el-table :data="tableData1" style="font-size: 12px; margin-top: 5px; margin-left: 7px; width: 760px;" class="custom-table-header">
@@ -134,7 +133,7 @@
                 </div>
               </el-carousel-item>
 
-              <!-- 第五个轮播项（统一样式） -->
+              <!-- 第五个轮播项 -->
               <el-carousel-item>
                 <div style="color: black; font-size: 13px; margin-bottom: 10px; margin-top: 10px;">以下两张图片的框选区域是否相似？</div>
                 <el-table :data="tableData1" style="font-size: 12px; margin-top: 5px; margin-left: 7px; width: 760px;" class="custom-table-header">
@@ -161,15 +160,27 @@
             </el-carousel>
 
             <!-- 文字多选题 - 仅当 qaMode 为 'text' 时显示 -->
-            <div v-if="qaMode === 'text'" style="color: black; font-size: 14px; padding: 20px;">
-              <h3>在比较两个股票片段是否相似时，您考虑到的因素是？（可多选）</h3>
-              <el-checkbox-group v-model="selectedFactors">
-                <el-checkbox label="片段长度" style="margin-bottom: 10px;">① 片段长度</el-checkbox><br>
-                <el-checkbox label="均线发散程度" style="margin-bottom: 10px;">② 均线发散程度</el-checkbox><br>
-                <el-checkbox label="均线倾斜程度" style="margin-bottom: 10px;">③ 均线倾斜程度</el-checkbox><br>
-                <el-checkbox label="出现金叉情况" style="margin-bottom: 10px;">④ 出现金叉情况</el-checkbox><br>
-                <el-checkbox label="出现死叉情况" style="margin-bottom: 10px;">⑤ 出现死叉情况</el-checkbox>
-              </el-checkbox-group>
+            <div v-if="qaMode === 'text'" style="color: black; font-size: 14px;">
+              <h4 style="margin-top: 0px;">在比较两个股票片段是否相似时，您考虑到的因素是？（可多选）</h4>
+              <div style="display: flex; margin-left: 40px;">
+                <div style="width: 45%; height: 260px; border: #d6d6d6 1px solid; border-radius: 5px;">
+                  <span style="font-size: 13px; background-color: antiquewhite;">系统默认因素</span>
+                  <el-checkbox-group v-model="selectedFactors" style="margin-top: 10px;">
+                    <el-checkbox label="片段长度" style="margin-bottom: 10px;">片段长度</el-checkbox><br>
+                    <el-checkbox label="均线发散程度" style="margin-bottom: 10px;">均线发散程度</el-checkbox><br>
+                    <el-checkbox label="均线倾斜程度" style="margin-bottom: 10px;">均线倾斜程度</el-checkbox><br>
+                    <el-checkbox label="出现金叉情况" style="margin-bottom: 10px;">出现金叉情况</el-checkbox><br>
+                    <el-checkbox label="出现死叉情况" style="margin-bottom: 10px;">出现死叉情况</el-checkbox><br>
+                  </el-checkbox-group>
+                </div>
+                <div style="width: 45%; height: 260px; border: #d6d6d6 1px solid; border-radius: 5px; margin-left: 10px;">
+                  <span style="font-size: 13px; background-color: antiquewhite;">用户自定义因素</span>
+                  <el-checkbox-group v-model="selectedFactors2" style="margin-top: 10px;">
+                    <el-checkbox label="MA4下穿MA20情况" style="margin-bottom: 10px;">MA4下穿MA20情况</el-checkbox><br>
+                    <el-checkbox label="MA4初始倾斜角度" style="margin-bottom: 10px;">MA4初始倾斜角度</el-checkbox><br>
+                  </el-checkbox-group>
+                </div>
+              </div>
               <div style="margin-top: 20px;">
                 <span style="margin-right: 10px;">补充选项:</span>
                 <el-input
@@ -178,11 +189,8 @@
                   style="width: 300px;"
                 ></el-input>
               </div>
-              <el-button type="primary" style="margin-top: 20px;" @click="submitTextAnswer">保存</el-button>
-              <!-- 提交答案后不再显示对错判断 -->
-              <!-- <div v-if="showAnswerFeedback" :style="{ color: isAnswerCorrect ? 'green' : 'red', marginTop: '10px' }">
-                {{ answerFeedback }}
-              </div> -->
+              
+              <el-button type="primary" style="margin-top: 20px;" @click="submitTextAnswer">提交补充因素（待审核）</el-button>
             </div>
           </div>
           <div v-if="currentCard === 2">
@@ -192,9 +200,9 @@
       </div>
       <template #footer>
         <div style="margin-top: 10px;">
-          <el-button @click="onUpdateVisible(false)">Cancel</el-button>
+          <el-button @click="onUpdateVisible(false)">取消</el-button>
           <el-button type="primary" @click="onConfirm" class="apply-mode-btn">
-            Confirm
+            确认
           </el-button>
         </div>
       </template>
@@ -265,7 +273,7 @@ const cardList = [
 const currentCard = ref(1);
 
 // qaMode 控制问答类型：'image' 为图片问答，'text' 为文字问答
-const qaMode = ref('image');
+const qaMode = ref('text');
 
 // 切换问答模式的函数
 const toggleQaMode = () => {
@@ -273,44 +281,18 @@ const toggleQaMode = () => {
 };
 
 // 文字多选题相关状态
-const selectedFactors = ref([]); // 存储用户选择的因素，因为是多选，所以是数组
+const selectedFactors = ref([]); // 存储用户选择的系统默认因素
+const selectedFactors2 = ref([]); // 存储用户选择的自定义因素
 const supplementaryOption = ref(''); // 存储用户输入的补充选项
-const showAnswerFeedback = ref(false); // 控制是否显示答案反馈
-const answerFeedback = ref(''); // 答案反馈文本
-const isAnswerCorrect = ref(false); // 答案是否正确
 
 // 提交文字答案的函数
 const submitTextAnswer = () => {
-  // 移除判断对错的逻辑，因为本题用于收集信息
-  // const correctAnswers = ['片段长度', '均线发散程度', '均线倾斜程度', '出现金叉情况', '出现死叉情况'];
-  // const allCorrectSelected = correctAnswers.every(factor => selectedFactors.value.includes(factor));
-  // const noExtraSelected = selectedFactors.value.every(factor => correctAnswers.includes(factor));
-
-  // if (allCorrectSelected && noExtraSelected) {
-  //   isAnswerCorrect.value = true;
-  //   answerFeedback.value = '恭喜你，回答正确！';
-  // } else {
-  //   isAnswerCorrect.value = false;
-  //   answerFeedback.value = '很抱歉，回答不完全正确。请检查您的选择。';
-  // }
-
-  // 仅打印收集到的信息
-  console.log('用户选择的因素:', selectedFactors.value);
+  console.log('用户选择的系统默认因素:', selectedFactors.value);
+  console.log('用户选择的自定义因素:', selectedFactors2.value);
   if (supplementaryOption.value) {
     console.log('用户补充的因素:', supplementaryOption.value);
   }
-
-  // 可以在这里添加将收集到的数据发送到后端或进行其他处理的逻辑
-  // 例如：sendDataToBackend({ selectedFactors: selectedFactors.value, supplementaryOption: supplementaryOption.value });
-
-  // 提交后可以清空选项或给出简单的保存成功提示
-  // selectedFactors.value = [];
-  // supplementaryOption.value = '';
-  // showAnswerFeedback.value = true; // 如果需要显示“已保存”提示
-  // answerFeedback.value = '您的回答已保存。';
-  // isAnswerCorrect.value = true; // 假设保存成功即为“正确”状态，或根据实际需要调整
 };
-
 
 // 点击卡片时更新选中状态
 const handleCardClick = (id) => {
@@ -328,20 +310,48 @@ const onUpdateVisible = (newValue) => {
   emit("update:model-value", false);
 };
 
-// 新增：自动全选逻辑
-const tableRefs = {
-  3: ref(null),
-  4: ref(null),
-  5: ref(null)
-};
-
-
 // 查找方式切换
 const searchMode = ref('multi'); // multi: 多股票对比查找, history: 本股票历史行情查找
 const dateRange = ref([new Date('2016-01-02'), new Date('2016-06-20')]);
 
 const searchInfo = store.state.searchInfo;
 const onConfirm = () => {
+  // 根据当前问答模式收集不同的答案
+  if (qaMode.value === 'text') {
+    console.log('=== 文字问答答案 ===');
+    console.log('系统默认因素选择:', selectedFactors.value);
+    console.log('自定义因素选择:', selectedFactors2.value);
+    if (supplementaryOption.value) {
+      console.log('补充因素:', supplementaryOption.value);
+    }
+  } else {
+    console.log('=== 图片问答答案 ===');
+    console.log('第1组图片: ', simState.value === 1 ? '相似' : simState.value === 2 ? '不相似' : '未选择');
+    if (simState.value === 1) {
+      console.log('第1组相似度评分:', similarityScore.value);
+    }
+    
+    console.log('第2组图片: ', simState1.value === 1 ? '相似' : simState1.value === 2 ? '不相似' : '未选择');
+    if (simState1.value === 1) {
+      console.log('第2组相似度评分:', similarityScore1.value);
+    }
+    
+    console.log('第3组图片: ', simState2.value === 1 ? '相似' : simState2.value === 2 ? '不相似' : '未选择');
+    if (simState2.value === 1) {
+      console.log('第3组相似度评分:', similarityScore2.value);
+    }
+    
+    console.log('第4组图片: ', simState3.value === 1 ? '相似' : simState3.value === 2 ? '不相似' : '未选择');
+    if (simState3.value === 1) {
+      console.log('第4组相似度评分:', similarityScore3.value);
+    }
+    
+    console.log('第5组图片: ', simState4.value === 1 ? '相似' : simState4.value === 2 ? '不相似' : '未选择');
+    if (simState4.value === 1) {
+      console.log('第5组相似度评分:', similarityScore4.value);
+    }
+  }
+  
   onUpdateVisible(false);
 };
 </script>
@@ -356,25 +366,15 @@ const onConfirm = () => {
   color: var(--el-color-white);
 }
 
-/* 使用/deep/或::v-deep选择器穿透scoped样式 */
-.custom-table-header .el-table__header th {
-  background-color: #f5f7fa !important;
-  text-align: center;
-  height: 10px !important;
-}
-
-/* 或者使用::v-deep (Vue 3) */
 ::v-deep .custom-table-header .el-table__header th {
   background-color: #f5f7fa !important;
   text-align: center !important;
   font-size: 12px !important;
-
 }
 
 .el-carousel__item h3 {
   color: #475669;
   opacity: 0.75;
-
   margin: 0;
   text-align: center;
 }
