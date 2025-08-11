@@ -115,22 +115,15 @@ watch(
   ([newStartDate, newEndDate], [oldStartDate, oldEndDate]) => {
     console.log('[Graph.vue] Watch: startDate or endDate changed', { newStartDate, newEndDate, oldStartDate, oldEndDate });
     if (!props.selectedDatePreset && (newStartDate !== oldStartDate || newEndDate !== oldEndDate)) {
-      console.log("[Graph.vue] 日期已更改，开始刷新子图表");
-
       if (!myChart || !rawDataGlobal) {
-        console.warn("[Graph.vue] myChart or rawDataGlobal not initialized, cannot refresh chart.");
         return;
       }
-      
       const startIndex = rawDataGlobal.categoryData.findIndex((d) => d >= newStartDate);
       let endIndex = rawDataGlobal.categoryData.findIndex((d) => d >= newEndDate);
-
       if (startIndex === -1) {
-        console.warn("[Graph.vue] Start date not found in data, skipping brush/dataZoom dispatch.");
         return;
       }
       if (endIndex === -1) endIndex = rawDataGlobal.categoryData.length - 1;
-      
       myChart.dispatchAction({
         type: "brush",
         areas: [
@@ -146,7 +139,6 @@ watch(
         start: (startIndex / rawDataGlobal.categoryData.length) * 100,
         end: (endIndex / rawDataGlobal.categoryData.length) * 100 + 0.1,
       });
-      console.log(`[Graph.vue] Dispatched dataZoom for range: ${newStartDate} to ${newEndDate}`);
     }
   },
   {
@@ -156,9 +148,7 @@ watch(
 );
 
 watch(() => props.selectedDatePreset, (newPreset) => {
-  console.log('[Graph.vue] Watch: selectedDatePreset changed to', newPreset);
   if (!myChart || !rawDataGlobal) {
-    console.warn("[Graph.vue] myChart or rawDataGlobal not initialized, cannot apply preset.");
     return;
   }
 
@@ -199,8 +189,6 @@ watch(() => props.selectedDatePreset, (newPreset) => {
     startPercent = (startIndex / totalDataPoints) * 100;
     endPercent = (endIndex / totalDataPoints) * 100 + 0.1;
   }
-  console.log(`[Graph.vue] Applying preset ${newPreset}. DataZoom: start=${startPercent.toFixed(2)}%, end=${endPercent.toFixed(2)}%`);
-
   myChart.dispatchAction({
     type: "brush",
     areas: [
@@ -219,7 +207,6 @@ watch(() => props.selectedDatePreset, (newPreset) => {
 });
 
 watch(() => props.isZoomLocked, (newVal) => {
-  console.log('[Graph.vue] Watch: isZoomLocked changed to', newVal);
   if (myChart) {
     const option = myChart.getOption();
     if (option.dataZoom && option.dataZoom.length > 0) {
@@ -227,21 +214,16 @@ watch(() => props.isZoomLocked, (newVal) => {
         zoom.zoomLock = newVal;
         zoom.moveOnMouseWheel = !newVal;
       });
-      console.log('[Graph.vue] DataZoom zoomLock and moveOnMouseWheel updated.');
     }
-
     // Update brush type based on isZoomLocked
     if (option.toolbox && option.toolbox.feature && option.toolbox.feature.brush) {
       option.toolbox.feature.brush.type = newVal ? ["lineX"] : []; // Only lineX when locked, none when unlocked
-      console.log('[Graph.vue] Brush toolbox type updated:', option.toolbox.feature.brush.type);
     }
     myChart.setOption(option, {
       notMerge: false, // Ensure this is false to merge options
       lazyUpdate: true // Improve performance
     });
-
     if (!newVal) {
-      console.log('[Graph.vue] isZoomLocked is false, clearing active brush.');
       clearActiveBrush();
     }
   } else {
@@ -250,7 +232,6 @@ watch(() => props.isZoomLocked, (newVal) => {
 });
 
 watch(() => props.savedBrushes, (newSavedBrushes) => {
-  console.log('[Graph.vue] Watch: savedBrushes changed', newSavedBrushes);
   if (myChart) {
     updateGraphicElements();
   } else {
@@ -259,7 +240,6 @@ watch(() => props.savedBrushes, (newSavedBrushes) => {
 }, { deep: true });
 
 const clearActiveBrush = () => {
-    console.log('[Graph.vue] Attempting to clear active brush.');
     if (myChart) {
         myChart.dispatchAction({
             type: 'brush',
@@ -267,7 +247,6 @@ const clearActiveBrush = () => {
         });
         currentActiveBrush.value = null;
         emit('brush-updated', null);
-        console.log('[Graph.vue] Active brush cleared and brush-updated emitted with null.');
     } else {
       console.warn('[Graph.vue] myChart not initialized, cannot clear active brush.');
     }
@@ -281,20 +260,12 @@ const fetchDataAndUpdateChart = async () => {
   console.log('[Graph.vue] fetchDataAndUpdateChart called.');
   if (chartRef111.value) {
     if (!myChart) {
-      console.log('[Graph.vue] Initializing ECharts instance.');
       myChart = echarts.init(chartRef111.value);
-      console.log('[Graph.vue] ECharts instance initialized successfully.');
 
       myChart.on('brushSelected', function (params) {
-        console.log('[Graph.vue] brushSelected event triggered. Params:', JSON.parse(JSON.stringify(params))); // Deep copy for logging
         if (params.batch.length > 0 && params.batch[0].areas.length > 0) {
-          
-          
-          
-          
           const selectedArea = params.batch[0].areas[0];
           console.log('[Graph.vue] Selected area detected:', selectedArea);
-
           // 根据画框类型获取对应的DOM元素
           let brushElement = null;
           if (selectedArea.brushType === 'rect') {
@@ -363,20 +334,13 @@ const fetchDataAndUpdateChart = async () => {
               pixelPosition: pixelPosition // This will likely be null for lineX as there's no visible rect element
             };
           }
-          
-          console.log('[Graph.vue] Current selected area info (to emit):', brushInfo);
-          
           currentActiveBrush.value = brushInfo;
           emit('brush-updated', currentActiveBrush.value);
-          console.log('[Graph.vue] Emitted brush-updated event with data.');
         } else {
             currentActiveBrush.value = null;
             emit('brush-updated', null);
-            console.log('[Graph.vue] Selected area cleared, emitted brush-updated with null.');
         }
       });
-      //
-      console.log('[Graph.vue] brushSelected event listener registered.');
     }
     try {
       console.log(`[Graph.vue] Fetching data for code: ${props.code}.json`);
@@ -398,7 +362,6 @@ const fetchDataAndUpdateChart = async () => {
           },
         ],
       });
-      console.log('[Graph.vue] Dispatched initial brush action for default view.');
     } catch (error) {
       console.error("[Graph.vue] Failed to get data:", error);
     }
@@ -408,23 +371,16 @@ const fetchDataAndUpdateChart = async () => {
 };
 
 const updateGraphicElements = () => {
-    console.log('[Graph.vue] updateGraphicElements called. Saved brushes:', props.savedBrushes);
     if (!myChart || !rawDataGlobal) {
-        console.warn('[Graph.vue] updateGraphicElements: myChart or rawDataGlobal not ready.');
         return;
     }
-
     const graphicElements = props.savedBrushes.map(brush => {
         const startIndex = rawDataGlobal.categoryData.indexOf(brush.startDate);
         const endIndex = rawDataGlobal.categoryData.indexOf(brush.endDate);
-
         if (startIndex === -1 || endIndex === -1) {
-            console.warn(`[Graph.vue] updateGraphicElements: Brush date range not found in data: ${brush.startDate} - ${brush.endDate}. Skipping.`);
             return null;
         }
-
         if (brush.type === 'rect' && brush.pixelPosition) {
-            console.log('[Graph.vue] Drawing saved rect brush at pixelPosition:', brush.pixelPosition);
             return {
                 type: 'rect',
                 shape: {
@@ -441,28 +397,21 @@ const updateGraphicElements = () => {
                 z: 100
             };
         } else if (brush.type === 'lineX') {
-            console.log('[Graph.vue] Drawing saved lineX brush for range:', brush.startDate, brush.endDate);
             const xAxis = myChart.getModel().getComponent('xAxis', 0);
             const grid = myChart.getModel().getComponent('grid', 0);
 
             // Ensure grid and xAxis coordinate systems are ready
             if (!grid || !xAxis || !grid.coordinateSystem || !xAxis.coordinateSystem) {
-              console.warn('[Graph.vue] Grid or XAxis coordinate system not ready for lineX brush. Skipping.');
               return null;
             }
 
             const xStart = myChart.convertToPixel({ xAxisIndex: 0 }, rawDataGlobal.categoryData[startIndex]);
             const xEnd = myChart.convertToPixel({ xAxisIndex: 0 }, rawDataGlobal.categoryData[endIndex]);
-            
             const gridRect = grid.coordinateSystem.getRect();
             const yTop = gridRect.y;
             const yBottom = gridRect.y + gridRect.height;
-
             const rectWidth = Math.abs(xEnd - xStart);
             const rectX = Math.min(xStart, xEnd);
-
-            console.log(`[Graph.vue] Calculated pixels for lineX brush: x=${rectX}, y=${yTop}, width=${rectWidth}, height=${yBottom - yTop}`);
-
             return {
                 type: 'rect',
                 shape: {
@@ -479,7 +428,6 @@ const updateGraphicElements = () => {
                 z: 100
             };
         }
-        console.warn('[Graph.vue] Unrecognized brush type or missing pixelPosition for brush:', brush);
         return null;
     }).filter(Boolean);
 
@@ -489,17 +437,14 @@ const updateGraphicElements = () => {
         notMerge: false,
         lazyUpdate: true
     });
-    console.log(`[Graph.vue] ECharts graphic option updated with ${graphicElements.length} elements.`);
 };
 
 
 function setChartOption() {
-  console.log("[Graph.vue] setChartOption called. Current MA options:", props.checkListMAOption);
   if (!rawDataGlobal) {
     console.error("[Graph.vue] setChartOption: rawDataGlobal is null. Cannot set chart option.");
     return;
   }
-
   const option = {
     color: ['#cd1f0e ', '#edbf09', '#62c613', '#1286ff', '#9f12ff', '#000000'],
     animation: true,
@@ -519,10 +464,10 @@ function setChartOption() {
       axisPointer: { type: "cross" },
       borderWidth: 1,
       borderColor: "#ccc",
-      padding: 10,
-      textStyle: { color: "#000", align: "left" },
+      padding: 5,
+      textStyle: { color: "#000", align: "left", fontSize: 9 },
       position: function (pos) {
-        return [pos[0] + 80, pos[1] + 80];
+        return [pos[0] + 20, pos[1] - 50];
       },
     },
     axisPointer: {
@@ -657,7 +602,6 @@ function setChartOption() {
     graphic: []
   };
   myChart.setOption(option, true);
-  console.log('[Graph.vue] ECharts option set successfully.');
   updateGraphicElements(); // After setting the main option, update graphic elements
 }
 

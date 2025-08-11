@@ -4,12 +4,22 @@ const store = createStore({
     state: {
         resultJson : null,
 
+        sim_stock_list:[], // 模式相似股票列表
+        // 新的用户查找信息
+        newSearchInfo:{
+            selectedFactor: null, // 选择的系统默认因素
+            selectedFactor2: null, // 选择的自定义因素
+            supplementaryOption: null, // 补充选项
+            photoOption: [], // 图片选项
+            savedBrushTimeRanges: [], // 保存的刷选时间区间
+            recentNDaysValue: 0, // 最近N天的值
+        },
+
         baseInfo:{
             isMode: false, // 是否为模式
             isStock: false, // 是否为股票
             currentFunction: '股票信息预览', // 当前功能
             isDisabled: false, // 是否禁用查找历史区间按钮
-            // 0713----------------------------------------------
             isChooseStock: false, 
             isHistorySearch: false, 
         },
@@ -1737,6 +1747,18 @@ const store = createStore({
 
     // 用于修改 state 的方法，必须是同步的
     mutations: {
+        updateNewSearchInfo(state, newSearchInfo) {
+            state.newSearchInfo = {
+            ...state.newSearchInfo,
+            ...newSearchInfo // 可同时更新多个属性
+            };
+        },
+        
+        // 新增：修改单个属性的方法
+        updateNewSearchInfoProperty(state, { key, value }) {
+            // 直接修改对象的单个属性
+            state.newSearchInfo[key] = value;
+        },
         updateStockList1(state, newList) {
             state.stockList1 = newList;
         },

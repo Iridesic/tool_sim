@@ -13,11 +13,11 @@
       border-radius: 10px;"
   >
     <el-tabs v-model="activeName3" style="margin-left: 20px; width: 220px; height: 570px;">
-      <el-tab-pane label="相似性查找模式" name="index">
+      <el-tab-pane label="系统模式" name="index">
         <div class="scrollable-div">
-          <el-card style="height: 60px; width: 210px; margin-bottom: 10px;" @click="handleCardClick1()">
+          <!-- <el-card style="height: 60px; width: 210px; margin-bottom: 10px;" @click="handleCardClick1()">
             <span style="margin-top: -60px; font-size: 13px; font-weight: bold; cursor: pointer;">自定义模式</span>
-          </el-card>
+          </el-card> -->
           <el-card
             v-for="(item, index) in modeList"
             :key="index"
@@ -39,6 +39,43 @@
               </div>
             </template>
           </el-card>
+          <el-dialog 
+            v-model="dialogVisible" 
+            :append-to-body="true"
+            :destroy-on-close="true" 
+            @open="handleDialogOpen"
+            class="modecards-dialog-tour"
+          >
+            <template #title>系统模式详解</template>
+            <hr/>
+            <!-- 将table和chart容器直接放在默认插槽 -->
+            <el-table :data="tableData" stripe border >
+              <el-table-column prop="name" label="模式名称" width="110" />
+              <el-table-column prop="code" label="模式代码" width="110" />
+              <el-table-column prop="desc" label="模式定义" width="240"/>
+              <el-table-column prop="class" label="模式类型" width="120" />
+              <el-table-column prop="minDays" label="查找时间区间/天" width="140"/>
+            </el-table>
+            <div ref="dialogChartRef" style="width: 700px; height: 300px; margin-top: -40px; margin-bottom: -40px;"></div>
+            <template #footer>
+                <el-button style="position: relative; z-index: 1;" @click="handleApplyMode" class="apply-mode-btn-step2">历史查找</el-button>
+                <el-button @click="handleApplyMode1" class="apply-mode-btn-step2">模式选股</el-button>
+            </template>
+          </el-dialog>
+        </div>
+      </el-tab-pane>
+      <el-tab-pane label="自定义模式" name="index1">
+        <div class="scrollable-div">
+          <el-card style="height: 60px; width: 210px; margin-bottom: 10px;" @click="handleCardClick1()">
+            <span style="margin-top: -60px; font-size: 13px; font-weight: bold; cursor: pointer;">自定义模式1</span>
+          </el-card>
+          <el-card style="height: 60px; width: 210px; margin-bottom: 10px;" @click="handleCardClick2()">
+            <span style="margin-top: -60px; font-size: 13px; font-weight: bold; cursor: pointer;">自定义模式2</span>
+          </el-card>
+          <el-card style="height: 60px; width: 210px; margin-bottom: 10px;" @click="handleCardClick3()">
+            <span style="margin-top: -60px; font-size: 13px; font-weight: bold; cursor: pointer;">自定义模式3</span>
+          </el-card>
+          
           <el-dialog 
             v-model="dialogVisible" 
             :append-to-body="true"

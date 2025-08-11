@@ -6,7 +6,7 @@
       </el-container>
       <el-container style="height: 94vh;">
         <el-aside>
-          <div style="height: 440px; background-color: #f3f3f3; border-radius: 10px; margin-top: 5px; margin-left: 5px;">
+          <div style="height: 400px; background-color: #f3f3f3; border-radius: 10px; margin-top: 5px; margin-left: 5px;">
             <el-tabs
               class="custom-tabs" v-model="activeName1" style="margin-left: 10px; width: 275px; "
             >
@@ -19,7 +19,7 @@
                 <el-table
                   :data="filteredTableData1(item)"
                   class="scrollable-div"
-                  max-height="335"
+                  max-height="300"
                   style="border-radius: 8px;"
                   border
                 >
@@ -80,12 +80,12 @@
                 <el-table
                   :data="filteredTableData2(item)"
                   style="
-                    height: 335px;
+                    height: 300px;
                     font-size: 12px;
                     margin-top: 5px;
                     border-radius: 8px;
                   "
-                  max-height="335"
+                  max-height="300" 
                   border
                 >
                   <el-table-column
@@ -140,7 +140,7 @@
             </el-tabs>
           </div>
 
-          <div class="scrollable-div" style="height: 240px; background-color: #f3f3f3; margin-top: 5px; border-radius: 10px;margin-left: 5px; overflow-y: auto;">
+          <div class="scrollable-div" style="height: 280px; background-color: #f3f3f3; margin-top: 5px; border-radius: 10px;margin-left: 5px; overflow-y: auto;">
             <div style="height: auto;">
               <div class="div5 tour-ma-config">
                 <div
@@ -168,7 +168,7 @@
                 </el-checkbox-group>
               </div>
 
-              <div v-if="isChooseStock" style="display: flex; margin-left: -25px; margin-top: -5px;">
+              <div style="display: flex; margin-left: -25px; margin-top: -5px;">
                 <div class="div2">选股考察区间：</div>
                 <el-select
                   v-model="recentNDaysValue"
@@ -185,14 +185,14 @@
                   />
                 </el-select>
               </div>
-              <div v-if="isHistorySearch">
+              <div>
                 <div style="margin-top: 10px; margin-left: -3px;">
                   <div  style="margin-top: 10px">
                       <el-button
                         plain
                         @click="dialogVisible = true"
                         class="custom-button btn-search-range"
-                        style="margin-top: 0px; width: 270px; margin-left: -5px;"
+                        style="margin-top: 0px; width: 270px; margin-left: -5px; font-size: 12px;"
                       >
                         请选择待查找股票集
                       </el-button> 
@@ -203,30 +203,27 @@
                   </div>
                 </div>
 
-                <div>
+                <div v-if="isHistorySearch">
                   <div class="div2" style="width: 200px; margin-left: -15px; margin-top: 5px;">设置查找历史时间范围：</div>
                   <el-date-picker
-                        v-model="value2"
-                        type="daterange"
-                        range-separator="To"
-                        start-placeholder="Start date"
-                        end-placeholder="End date"
-                        size="small"
-                        style="
-                          width: calc(100% - 48px);
-                          margin-top: 5px;
-                          margin-left: -10px;
-                        "
-                        @change="handleDateChange2"
-                      />
+                    v-model="value2"
+                    type="daterange"
+                    range-separator="To"
+                    start-placeholder="Start date"
+                    end-placeholder="End date"
+                    size="small"
+                    style="
+                      width: calc(100% - 48px);
+                      margin-top: 5px;
+                      margin-left: -10px;
+                    "
+                    @change="handleDateChange2"
+                  />
                 </div>
               </div>
 
 
-              <div style="margin-left: -8px; margin-top: 15px; margin-bottom: 10px;">
-                <el-button @click="getShowDialog" type="primary" plain style="font-size: 13px; height: 24px; width: 132px;" >配置确认</el-button>
-                <el-button type="primary" plain style="margin-left: 5px; font-size: 13px; height: 24px; width: 132px;" @click="getResult">开始查找</el-button>
-              </div>
+              
               <DialogBullish
                 :visible ="showDialog"
                 @close="showDialog = false"
@@ -281,7 +278,8 @@
                   </el-table-column>
                 </el-table>
               </div>
-              <div v-if="isGetResult2">
+              <!--历史查找-->
+              <!-- <div v-if="isGetResult2">
                 <div style="font-size: 13px; font-weight: 700; color:#8c8c8c; background-color: #ededed; padding: 1px; width: 275px; margin-left: 10px; margin-top: 10px;">|    相似股票筛选结果 ————————————</div>
                 <el-table
                   :data="tableDataRecent1"
@@ -327,7 +325,7 @@
                     </template>
                   </el-table-column>
                 </el-table>
-              </div>
+              </div> -->
             </div>
           </div>
 
@@ -386,7 +384,7 @@
             <div style="width: 1000px; gap: 0px; margin-top: 0px; margin-left: -60px;">
                 <Graph
                   ref="graphRef"
-                  style="position: relative; z-index: 10;"
+                  style="position: relative; z-index: 11;"
                   :code="graphCode1"
                   :startDate="modeInfo.startDate"
                   :endDate="modeInfo.endDate"
@@ -398,34 +396,37 @@
                   :isZoomLocked="isZoomLocked"
                   @brush-updated="handleBrushUpdated" 
                   :savedBrushes="savedBrushAreas"
-                /> 
-              <div style="border: 1px solid #cbcbcb; height: 140px; width: 90%; margin-top: -160px; margin-left: 80px; border-radius: 5px; overflow: hidden;">
-                <!-- 为图片列表添加容器并应用Flex布局 -->
-                <div style="display: flex; height: 100%; align-items: center; padding: 0 15px; overflow-x: auto; scrollbar-width: thin;">
-                  <div v-for="img in imageList" :key="img.filename" class="image-gallery" style="margin-right: 15px; flex-shrink: 0;">
-                    <img 
-                      :src="img.url" 
-                      :alt="img.filename" 
-                      :title="img.filename"
-                      class="screenshot-img"
-                      style="width: 200px; height: 200px; object-fit: cover; border-radius: 3px; margin-top: 10px;"
-                      @error="handleImageError(img)"
-                    >
+                  /> 
+              <div style="display: flex;">
+                <div style="border: 1px solid #cbcbcb; height: 140px; width: 900px; margin-top: -160px; margin-left: 80px; border-radius: 5px; overflow: hidden;">
+                  <!-- 为图片列表添加容器并应用Flex布局 -->
+                  <div style="display: flex; height: 140px; align-items: center; padding: 0 15px; overflow-x: auto; scrollbar-width: none;">
+                    <div v-for="img in imageList" :key="img.filename" class="image-gallery" style="margin-right: 15px; flex-shrink: 0;">
+                      <img 
+                        :src="img.url" 
+                        :alt="img.filename" 
+                        :title="img.filename"
+                        class="screenshot-img"
+                        style="width: 200px; height: 200px; object-fit: cover; border-radius: 3px; margin-top: 28px;"
+                        @error="handleImageError(img)"
+                      >
+                    </div>
                   </div>
-                </div>
+                </div> 
+
                 
-                <!-- 空状态和加载状态保持不变，但添加居中样式 -->
-                <div v-if="imageList.length === 0 && !loading" class="empty-state" style="height: 100%; display: flex; align-items: center; justify-content: center; color: #999;">
-                  暂无图片数据
-                </div>
-                <div v-if="loading" class="loading-state" style="height: 100%; display: flex; align-items: center; justify-content: center; color: #666;">
-                  加载中...
-                </div>
-              </div>     
+                <div style=" height: 140px; width: 60px; margin-top: -160px; margin-left: 10px; border-radius: 5px; overflow: hidden;">
+                  <div style="margin-left: -70px;">
+                    <el-button @click="getShowDialog" type="primary" plain style="position: absolute; z-index: 12; font-size: 12px; width: 60px; height: 70px;" >相似<br>特征<br>确认</el-button>
+                    <el-button type="success" plain style="position: absolute; z-index: 12; margin-left: 0px; font-size: 12px; width: 60px; margin-top: 72px; height: 69px" @click="getResult">开始<br>查找</el-button>
+                  </div>
+                </div> 
+              </div>
+    
               </div>
             <div style="margin-left: 10px;"><ModeCards /></div>
           </div>
-          <div style="position: absolute; top: 100px; right: 300px; z-index: 101;">
+          <div style="position: absolute; top: 100px; right: 300px; z-index: 12;">
             <el-button size="small" @click="setDateRange('daily')">日线</el-button>
             <el-button size="small" @click="setDateRange('weekly')">周线</el-button>
             <el-button size="small" @click="setDateRange('monthly')">月线</el-button>
@@ -434,7 +435,6 @@
             </el-button>
             <el-button size="small" @click="saveCurrentBrush" :disabled="!activeBrushData"> 保存当前标记
             </el-button>
-            <el-button size="small" @click="getAllImages()">刷新选取结果</el-button>
             <el-button 
               size="small" 
               type="danger" 
@@ -449,11 +449,12 @@
       </el-container>
     </div>
   </div>
+
 </template>
 
 <script setup>
 import * as echarts from "echarts";
-import { nextTick, ref, watch, computed, reactive, onMounted } from "vue";
+import { nextTick, ref, watch, computed, reactive, onMounted,toRaw } from "vue";
 import axios from "axios";
 import { useStore } from "vuex";
 import { StarFilled, Star } from '@element-plus/icons-vue';
@@ -517,13 +518,6 @@ const baseInfo = reactive({
   isSection: false,
   isChoose: false,
 });
-const resetBaseInfo = () => {
-  baseInfo.isHistory = false;
-  baseInfo.isCross = false;
-  baseInfo.isSection = false;
-  baseInfo.isChoose = false;
-};
-
 
 // 调用后端接口删除
 const deleteServerFiles = () => {
@@ -558,8 +552,6 @@ const deleteServerFiles = () => {
     ElMessage.info('已取消删除操作');
   });
 };
-
-
 const imageList = ref([]);
 const loading = ref(true);
 const handleImageError = (img) => {
@@ -593,17 +585,12 @@ const fetchImages = async () => {
   } finally {
     loading.value = false;
   }
-};
-    
+};   
 
 // 组件挂载时获取数据
 onMounted(() => {
   fetchImages();
 });
-
-const getAllImages = () =>{
-  fetchImages();
-}
 
 const toggleFavorite = () => {
   const code = stockShowInfo.value?.code;
@@ -685,21 +672,115 @@ const getResult = async() => {
   {
     isGetResult2.value = true;
   }
-  // 关键修改：只打印已保存的画框时间区间
-  console.log('===== 开始查找 - 已保存的画框时间区间 =====');
-  if (savedBrushTimeRanges.value.length > 0) {
-    savedBrushTimeRanges.value.forEach((range, index) => {
-      console.log(`保存的区间 ${index + 1}:`);
-      console.log(`  股票代码: ${range.code}`);
-      console.log(`  起始时间: ${range.startDate}`);
-      console.log(`  终止时间: ${range.endDate}`);
-      console.log(`  保存时间: ${new Date(range.saveTime).toLocaleString()}`);
-    });
-  } else {
-    console.log('没有已保存的画框时间区间');
+  store.commit("updateNewSearchInfo", {
+    savedBrushTimeRanges: savedBrushTimeRanges.value,
+    recentNDaysValue: recentNDaysValue.value
+  });
+  console.log('===== 查找配置已保存 =====');
+  console.log('查找配置', store.state.newSearchInfo);
+  const target = toRaw(store.state.newSearchInfo);
+  console.log(target);
+  resultType.value = true;
+  
+  const API_BASE_URL = 'http://127.0.0.1:5000';
+  const timestamp = new Date().getTime();
+  
+  try {
+    // 显示加载状态
+    const loading = true;
+    console.log('开始查询相似股票...');
+    
+    // 发送POST请求
+    const response = await axios.post(
+      `${API_BASE_URL}/find_similar_stocks_new?timestamp=${timestamp}`,
+      {
+        target_code: target.savedBrushTimeRanges[0].code,
+        start_date: target.savedBrushTimeRanges[0].startDate,
+        end_date: target.savedBrushTimeRanges[0].endDate,
+        n_days: target.recentNDaysValue,
+        // ma_list: target.maList,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+    // 处理成功响应
+    if (response.data.result) {
+      console.log(`成功获取${response.data.count}只相似股票`);
+      console.log('相似股票数据:', response.data);
+      // 定义需要提取的均线字段顺序（根据数据中的MA类型确定，确保完整性）
+      const maFields = ['MA4', 'MA12', 'MA16', 'MA20', 'MA47']; // 可根据实际字段补充
+
+      // 处理每只股票的recent_data：先转二维数组，再转置
+      response.data.result.forEach(stock => {
+        if (!stock.recent_data || !Array.isArray(stock.recent_data) || stock.recent_data.length === 0) {
+          console.warn('无效的recent_data（非数组或空数组），跳过处理', stock.stock_code);
+          return;
+        }
+
+        // 第一步：将对象数组转换为二维数组（按maFields顺序提取值）
+        let twoDArray = [];
+        try {
+          twoDArray = stock.recent_data.map(item => {
+            // 检查数组元素是否为对象
+            if (typeof item !== 'object' || item === null) {
+              throw new Error('元素不是对象');
+            }
+            // 按固定字段顺序提取值，确保每行长度一致
+            return maFields.map(field => {
+              if (item[field] === undefined) {
+                throw new Error(`缺少字段${field}`);
+              }
+              return item[field];
+            });
+          });
+        } catch (err) {
+          console.warn(`转换二维数组失败（${stock.stock_code}）：${err.message}`, stock.recent_data);
+          return;
+        }
+
+        // 第二步：对二维数组进行转置
+        const rows = twoDArray.length;
+        const cols = twoDArray[0].length;
+        const transposed = [];
+        for (let j = 0; j < cols; j++) {
+          transposed[j] = [];
+          for (let i = 0; i < rows; i++) {
+            transposed[j][i] = twoDArray[i][j]; // 行列互换
+          }
+        }
+        // 替换原recent_data为转置后的二维数组
+        stock.recent_data = transposed;
+        console.log(`处理完成（${stock.stock_code}），转置后结构：`, transposed);
+      });
+      store.state.sim_stock_list = response.data.result;
+      
+      return {
+        success: true,
+        data: response.data
+      };
+    } else {
+      return {
+        success: false,
+        message: response.data.message || '未找到相似股票数据'
+      };
+    }
+  } catch (err) {
+    console.error('查询相似股票失败:', err);
+    // 详细错误信息处理
+    let errorMsg = '网络请求错误';
+    if (err.response) {
+      errorMsg = err.response.data.error || `错误码: ${err.response.status}`;
+      console.error('错误详情:', err.response.data);
+    }
+    return {
+      success: false,
+      message: errorMsg
+    };
+
   }
-  console.log('近N天:', recentNDaysValue.value);
-  console.log('========================================');
 };
 
 const handleRowClick = async (row) => {
@@ -708,7 +789,6 @@ const handleRowClick = async (row) => {
   const foundStock = store.state.stockList.find((item) => item.code === code);
   if (foundStock) {
     stockShowInfo.value = { ...foundStock };
-  } else {
   }
   selectedDatePreset.value = null;
 };
@@ -731,7 +811,6 @@ const handleRowClick1 = async (row) => {
     {
       isGetResult2.value = true;
     }
-    resultType.value = true;
 };
 
 const activeName1 = ref("near");
@@ -749,18 +828,14 @@ const value2 = ref([
 const value3 = ref([]);
 
 watch(value1, (newVal) => {
-  console.log('[Main copy1.vue] WATCH(value1): Triggered with newVal:', newVal);
   if (newVal && newVal.length === 2 && newVal[0] instanceof Date && !isNaN(newVal[0].getTime()) && newVal[1] instanceof Date && !isNaN(newVal[1].getTime())) {
     const formattedStartDate = formatDateToLocal(newVal[0]);
     const formattedEndDate = formatDateToLocal(newVal[1]);
-    
     store.state.modeInfo.startDate = formattedStartDate;
     store.state.modeInfo.endDate = formattedEndDate;
     value3.value = newVal; 
     value2.value = newVal; 
-    console.log('[Main copy1.vue] WATCH(value1): Updated modeInfo.startDate/endDate and value2/value3:', { startDate: store.state.modeInfo.startDate, endDate: store.state.modeInfo.endDate });
   } else {
-    console.warn('[Main copy1.vue] WATCH(value1): Invalid or incomplete date range received. Clearing dates. newVal:', newVal);
     store.state.modeInfo.startDate = null;
     store.state.modeInfo.endDate = null;
     value3.value = [];
@@ -769,96 +844,74 @@ watch(value1, (newVal) => {
 });
 
 watch(searchInfo, (newVal) => {
-    console.log('[Main copy1.vue] WATCH(searchInfo): Triggered. New searchInfo:', newVal);
     value2.value = [
       newVal.searchStartDate ? new Date(newVal.searchStartDate) : null,
       newVal.searchEndDate ? new Date(newVal.searchEndDate) : null
     ];
-    console.log('[Main copy1.vue] WATCH(searchInfo): Updated value2:', value2.value);
     if(baseInfo.isHistory === false)
     {
       tableDataRecent.value = newVal.stockList;
-      console.log('[Main copy1.vue] WATCH(searchInfo): baseInfo.isHistory is false, tableDataRecent updated.');
     }
 });
 
 watch(() => store.state.baseInfo.isMode,(newValue) => {
-    console.log('[Main copy1.vue] WATCH(store.state.baseInfo.isMode): Changed to', newValue);
     if (newValue === true && store.state.modeInfo.index === "BA2") {
       resultType.value = false;
       resultMode.value = true;
       resultStock.value = false;
-      console.log('[Main copy1.vue] WATCH(store.state.baseInfo.isMode): Mode changed to BA2, updating result display flags.');
     }
     if(newValue === false){
       resultType.value = true;
       resultMode.value = false;
       resultStock.value = false;
-      console.log('[Main copy1.vue] WATCH(store.state.baseInfo.isMode): Mode is false, updating result display flags.');
     }
   }
 );
 
 watch(() => baseInfo.isChoose,(newValue) => {
-    console.log('[Main copy1.vue] WATCH(baseInfo.isChoose): Changed to', newValue);
     if (newValue === true) {
       resultType.value = false;
       resultMode.value = false;
       resultStock.value = true;
-      console.log('[Main copy1.vue] WATCH(baseInfo.isChoose): isChoose is true, updating result display flags.');
     }
     else
     {
       resultType.value = true;
       resultMode.value = false;
       resultStock.value = false;
-      console.log('[Main copy1.vue] WATCH(baseInfo.isChoose): isChoose is false, updating result display flags.');
     }
   }
 );
 
 const newStartDate = ref(new Date("2016-01-02"));
 const newEndDate = ref(new Date("2016-06-20"));
-
 function formatDateToLocal(date) {
-  console.log('[formatDateToLocal]: Input date:', date, '(type:', typeof date, ')');
   if (!date) {
-    console.warn('[formatDateToLocal] Input date is null or undefined. Returning null.');
     return null;
   }
-  
   let processedDate = date;
-  // 确保 processedDate 是 Date 对象且有效
   if (!(processedDate instanceof Date) || isNaN(processedDate.getTime())) {
-    console.warn('[formatDateToLocal] Input is not a valid Date object or is an invalid Date. Attempting to parse:', date);
     try {
       const parsedDate = new Date(date);
       if (!isNaN(parsedDate.getTime())) {
         processedDate = parsedDate;
-        console.log('[formatDateToLocal] Successfully parsed to Date:', processedDate);
       } else {
-        console.error('[formatDateToLocal] Could not convert to valid Date object from string/invalid input:', date);
         return null;
       }
     } catch (e) {
-      console.error('[formatDateToLocal] Error converting input to Date:', e, 'Returning null.');
       return null;
     }
   }
-
   const year = processedDate.getFullYear();
   const month = String(processedDate.getMonth() + 1).padStart(2, '0');
   const day = String(processedDate.getDate()).padStart(2, '0');
   const result = `${year}-${month}-${day}`;
-  console.log('[formatDateToLocal] Formatted date result:', result);
   return result;
 }
 
 // Date selection triggers brush and zoom
 function handleDateChange(val) {
-  console.log('--- [Main copy1.vue] handleDateChange called with raw val:', val);
   if (!val || val.length !== 2) {
-    console.warn('[Main copy1.vue] handleDateChange: Invalid date range selected (val is null or not an array of two elements). Clearing dates.');
     selectedDatePreset.value = null;
     modeInfo.startDate = null;
     modeInfo.endDate = null;
@@ -880,35 +933,68 @@ function handleDateChange(val) {
 }
 
 const setDateRange = (preset) => {
-  console.log('--- [Main copy1.vue] setDateRange called with preset:', preset);
-  const today = new Date();
-  let startDate = new Date();
-  let endDate = new Date();
+  // 显示确认弹窗
+  ElMessageBox.confirm(
+    '相似性查找需在同一周期下进行，切换均线周期会清空已有截图，是否切换？',
+    '周期切换确认',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }
+  ).then(async () => {  // 这里添加async关键字
+    console.log('--- [Main copy1.vue] setDateRange called with preset:', preset);
+    const today = new Date();
+    let startDate = new Date();
+    let endDate = new Date();
 
-  switch (preset) {
-    case 'daily':
-      if(graphCode1.value.length > 6)
-        graphCode1.value = graphCode1.value.slice(0, 6);
-      startDate.setDate(today.getDate() - 200);
-      break;
-    case 'weekly':
-      startDate.setMonth(today.getMonth() - 200);
-      if(graphCode1.value.length > 6)
-        graphCode1.value = graphCode1.value.slice(0, 6);
-      graphCode1.value = graphCode1.value + "_week";
-      break;
-    case 'monthly':
-      startDate.setFullYear(today.getFullYear() - 200);
-      if(graphCode1.value.length > 6)
-        graphCode1.value = graphCode1.value.slice(0, 6);
-      graphCode1.value = graphCode1.value + "_month";
-      break;
-    default:
-      console.warn('[Main copy1.vue] setDateRange: Unknown date preset:', preset);
-      break;
-  }
-  value1.value = [startDate, endDate]; 
-  selectedDatePreset.value = preset;
+    switch (preset) {
+      case 'daily':
+        if(graphCode1.value.length > 6)
+          graphCode1.value = graphCode1.value.slice(0, 6);
+        startDate.setDate(today.getDate() - 200);
+        break;
+      case 'weekly':
+        startDate.setMonth(today.getMonth() - 200);
+        if(graphCode1.value.length > 6)
+          graphCode1.value = graphCode1.value.slice(0, 6);
+        graphCode1.value = graphCode1.value + "_week";
+        break;
+      case 'monthly':
+        startDate.setFullYear(today.getFullYear() - 200);
+        if(graphCode1.value.length > 6)
+          graphCode1.value = graphCode1.value.slice(0, 6);
+        graphCode1.value = graphCode1.value + "_month";
+        break;
+      default:
+        console.warn('[Main copy1.vue] setDateRange: Unknown date preset:', preset);
+        break;
+    }
+    value1.value = [startDate, endDate]; 
+    selectedDatePreset.value = preset;
+
+    // 删除后台文件夹中的截图 - 修改部分
+    try {
+      const API_BASE_URL = 'http://127.0.0.1:5000';
+      const response = await axios.post(`${API_BASE_URL}/delete-files`, {
+        folderPath: '/public/savepng' // 后端需要处理的文件夹路径
+      });
+      
+      if (response.data.success) {
+        ElMessage.success('服务器文件夹数据已成功删除');
+        // 可选：刷新数据列表
+        fetchImages(); // 例如重新获取图片列表，刷新视图
+      } else {
+        ElMessage.error('删除失败：' + response.data.msg);
+      }
+    } catch (err) {
+      console.error('删除请求失败：', err);
+      ElMessage.error('删除操作失败，请重试');
+    }
+  }).catch(() => {
+    // 用户点击取消时的处理
+    ElMessage.info('已取消周期切换');
+  });
 };
 
 const toggleZoomLock = () => {
@@ -926,12 +1012,13 @@ const toggleZoomLock = () => {
 
 const handleBrushUpdated = (data) => {
   activeBrushData.value = data;
+  if(!toRaw(activeBrushData.value)) {
+    console.warn('[Main copy1.vue] handleBrushUpdated: No active brush data received.');
+    return;
+  }
   console.log('Real-time brush data update (received in Main copy1.vue):', activeBrushData.value);
 };
 
-
-
-// 在现有ref定义区域添加
 const savedBrushTimeRanges = ref([]); // 仅存储已保存的画框时间区间
 
 const saveCurrentBrush = () => {
@@ -1016,6 +1103,7 @@ const saveCurrentBrush = () => {
         }).then(response => {
           if (response.data && response.data.success) {
             console.log(`[Main copy1.vue] 截图已保存到服务器: public/savepng/${fileName}`);
+            fetchImages();
           } else {
             console.error('[Main copy1.vue] 截图保存失败:', response.data?.msg || '未知错误');
           }
@@ -1034,6 +1122,7 @@ const saveCurrentBrush = () => {
   } else {
     console.warn('[Main copy1.vue] 没有可保存的画框数据');
   }
+  
 };
 
 const sidebarWidth = ref(290);
@@ -1043,7 +1132,6 @@ const getColumnWidth = (percentage) => {
 };
 
 watch(sidebarWidth, () => {
-  console.log('[Main copy1.vue] Watch: sidebarWidth changed.');
   nextTick(() => {
     const currentPage = document.getElementById("current-page");
     if (currentPage) {
@@ -1052,40 +1140,25 @@ watch(sidebarWidth, () => {
         const event = new Event("resize");
         window.dispatchEvent(event);
       });
-      console.log('[Main copy1.vue] Dispatched resize events for tables.');
     }
   });
 });
 
 function handleDateChange2(val) {
-  console.log('--- [Main copy1.vue] handleDateChange2 called with raw val:', val);
   if (!val || val.length !== 2) {
-    console.warn('[Main copy1.vue] handleDateChange2: Invalid date range for search pool selected. Clearing dates.');
     searchInfo.searchStartDate = null;
     searchInfo.searchEndDate = null;
     newStartDate.value = null;
     newEndDate.value = null;
-    console.log('[Main copy1.vue] handleDateChange2: SearchInfo after clearing:', { startDate: searchInfo.searchStartDate, endDate: searchInfo.searchEndDate });
     return;
   }
   let [startDateRaw, endDateRaw] = val;
-
-  console.log(`[Main copy1.vue] handleDateChange2 - startDateRaw:`, startDateRaw, `(type: ${typeof startDateRaw}, instanceof Date: ${startDateRaw instanceof Date}, isNaN(getTime()): ${startDateRaw instanceof Date ? isNaN(startDateRaw.getTime()) : 'N/A'})`);
-  console.log(`[Main copy1.vue] handleDateChange2 - endDateRaw:`, endDateRaw, `(type: ${typeof endDateRaw}, instanceof Date: ${endDateRaw instanceof Date}, isNaN(getTime()): ${endDateRaw instanceof Date ? isNaN(endDateRaw.getTime()) : 'N/A'})`);
-
   const startDateFormatted = formatDateToLocal(startDateRaw);
   const endDateFormatted = formatDateToLocal(endDateRaw);
-
-  console.log(`[Main copy1.vue] handleDateChange2 - After formatDateToLocal - startDateFormatted:`, startDateFormatted);
-  console.log(`[Main copy1.vue] handleDateChange2 - After formatDateToLocal - endDateFormatted:`, endDateFormatted);
-
   searchInfo.searchStartDate = startDateFormatted;
   searchInfo.searchEndDate = endDateFormatted;
   newStartDate.value = startDateFormatted; // 使用格式化后的字符串
   newEndDate.value = endDateFormatted;     // 使用格式化后的字符串
-
-  console.log('[Main copy1.vue] handleDateChange2: FINAL SearchInfo dates updated:', { startDate: searchInfo.searchStartDate, endDate: searchInfo.searchEndDate });
-  console.log('--- [Main copy1.vue] handleDateChange2 END ---');
 }
 
 const upColor = '#ec0000';
@@ -1119,6 +1192,7 @@ const ratioColor = computed(() => {
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   transition: transform 0.2s;
+  overflow: hidden;
 }
 
 .screenshot-img:hover {
@@ -1144,5 +1218,7 @@ const ratioColor = computed(() => {
   padding: 40px;
   color: #666;
 }
+
+
 
 </style>

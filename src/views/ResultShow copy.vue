@@ -11,23 +11,68 @@
     </div>
 
     <div v-if="isChooseStock" style="display: flex; height: 290px;">
+      <!-- <div style="width: 77%; height: 100px;">
+        <Graph style="margin-left: -40px; margin-top: -15px;" :code="graphCode" :startDate="resultStockInfo.startDate" :endDate="resultStockInfo.endDate" :checkListMAOption="store.state.modeInfo.lines2" :width="1040" :height="300" :legendData="store.state.modeInfo.lines2" />
+      </div>
+      <div style="width: 21%; background-color: #f3f3f3; height: 90px; border-radius: 10px; margin-left: 15px; margin-top: 10px;">
+        <div class="horizontal-table-container">
+          <el-table 
+            :data="tableData1"
+            :show-header="false"
+            style="width: 90%; border-radius: 10px; margin-left: 10px; margin-top: 10px;"
+          >
+            <el-table-column>
+              <template #default="scope">
+                <div style="margin-top: 5px;"></div>
+                <span style="font-size: 13px">{{ scope.row.name }}</span>
+                <div style="margin-top: 5px;"></div>
+              </template>
+            </el-table-column>
+            <el-table-column>
+              <template #default="scope">
+                <div style="margin-top: 5px;"></div>
+                <span style="font-size: 13px">{{ scope.row.age }}</span>
+                <div style="margin-top: 5px;"></div>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </div> -->
       <el-table :data="tableData2" border style="width: 99%; margin-left: 5px; margin-top: 5px; " stripe class="result-table" 
         :cell-style="{ textAlign: 'center' }" :header-cell-style="{ textAlign: 'center' }">
           <el-table-column fixed label="股票名称" prop="stockName" width="100px"></el-table-column>
-          <el-table-column fixed label="股票代码" prop="stockCode" width="90px"></el-table-column>
+          <el-table-column fixed label="股票代码" prop="stockCode" width="100px"></el-table-column>
           <el-table-column label="股票来源" prop="stockFrom" width="100px"></el-table-column>
           <el-table-column label="起始时间" prop="startDate"  width="100px"></el-table-column>
           <el-table-column label="终止时间" prop="endDate"  width="100px"></el-table-column>
-          <el-table-column label="基准区域（默认选择首选区）" width="330px">
-            <!--显示从后台获取的图片-->
-            <template #default="{ row }">
-              <img :src="row.imagePath" alt="基准图片" style="width: 300px; height: 140px; margin-top: 30px; margin-bottom: 30px;">
+          <el-table-column label="基准区域" width="300px">
+            <template #default="{ $index }">
+              <div :ref="(el) => setChartRef2(el, $index, 0)" style="width: 280px; height: 200px; margin-top: -20px; margin-bottom: -40px; margin-left: 40px;"></div>
             </template>
           </el-table-column>
 
           <el-table-column label="相似性选股结果（近N日）" width="300px">
             <template #default="{ $index }">
-              <div :ref="(el) => setChartRef(el, $index, 0)" style="width: 280px; height: 270px; margin-top: -30px; margin-bottom: -30px; margin-left: 0px;"></div>
+              <div :ref="(el) => setChartRef(el, $index, 0)" style="width: 280px; height: 200px; margin-top: -20px; margin-bottom: -40px; margin-left: 40px;"></div>
+            </template>
+          </el-table-column>
+          <el-table-column label="相似度" prop="similarity"></el-table-column>
+      </el-table>
+    
+    </div>
+    
+    <div v-if="isHistorySearch">
+      <el-table :data="tableData" border style="width: 99%; margin-left: 5px; margin-top: 5px;" stripe class="result-table" 
+        :cell-style="{ textAlign: 'center' }" :header-cell-style="{ textAlign: 'center' }">
+          <el-table-column fixed label="序号" prop="stockIndex" width="60px"></el-table-column>
+          <el-table-column fixed label="股票名称" prop="stockName" width="90px"></el-table-column>
+          <el-table-column fixed label="股票代码" prop="stockCode" width="90px"></el-table-column>
+          <el-table-column label="股票来源" prop="stockFrom" width="100px"></el-table-column>
+          <el-table-column label="起始时间" prop="startDate"  width="100px"></el-table-column>
+          <el-table-column label="终止时间" prop="endDate"  width="100px"></el-table-column>
+          <el-table-column label="基础MA指标图" width="530px">
+            <template #default="{ $index }">
+              <div :ref="(el) => setChartRef(el, $index, 0)" style="width: 520px; height: 200px; margin-top: -10px; margin-bottom: -30px; margin-left: 20px;"></div>
             </template>
           </el-table-column>
           <el-table-column label="相似度" prop="similarity"></el-table-column>
@@ -40,8 +85,10 @@
 import { ref, onMounted, nextTick, watch, toRaw, computed  } from 'vue';
 import { useStore } from "vuex";
 import * as echarts from 'echarts';
+import Graph from "@/views/Graph.vue";
 
 const store = useStore();
+const resultStockInfo = store.state.resultStockInfo;
 const isHistorySearch = computed(() => {
   return store.state.baseInfo.isHistorySearch === true;
 });
@@ -49,6 +96,10 @@ const isChooseStock = computed(() => {
   return store.state.baseInfo.isChooseStock === true;
 });
 const graphCode = ref('000021');
+const graphCode1 = ref('000021');
+
+// 用于强制更新Graph组件的key
+const componentKey = ref(Date.now());
 
 watch(() => store.state.resultStockInfo.code,(newValue) => {
   console.log("----------------------------------");
@@ -58,6 +109,12 @@ watch(() => store.state.resultStockInfo.code,(newValue) => {
   graphCode.value = newValue;
   }
 );
+
+// 表格数据
+const tableData1 = ref([
+  { name: '起始时间', age: '2024-09-26' },
+  { name: '终止时间', age: '2024-10-28' },
+])
 // -------------------------
 function getDateRange(dateStr) {
     const date = new Date(`${dateStr.slice(0, 4)}-${dateStr.slice(4, 6)}-${dateStr.slice(6)}`);
@@ -73,6 +130,56 @@ function getDateRange(dateStr) {
     return range;
 }
 
+// 根据涨幅正负设置标签样式
+const getTagType = (value) => {
+  return value < 0 ? 'success' : value > 0 ? 'danger' : 'info'
+}
+
+// // 根据涨幅正负设置标签样式
+// const getTagType1 = (value) => {
+//   return value > 0 ? 'success' : value < 0 ? 'danger' : 'info'
+// }
+// const setChartRef1 = (el, rowIndex, colIndex) => {
+//   if (el) {
+//     nextTick(() => {
+//       initChart1(el, rowIndex)
+//     })
+//   }
+// }
+// const initChart1 = (el, rowIndex) => {
+//   const chart = echarts.init(el)
+//   const data = resultData.value[rowIndex].riseFallRatio
+//   const option = {
+//     series: [
+//       {
+//         name: '涨跌比例',
+//         type: 'pie',
+//         radius: ['30%', '80%'],
+//         avoidLabelOverlap: true, // 开启标签重叠避免
+//         label: {
+//           show: true,
+//           position: 'inside', // 标签放在饼图内部
+//           formatter: '{b}\n{c}%', // 名称和百分比分行显示
+//           fontSize: 11,
+//           color: '#fff', // 白色文字，确保在深色区域可见
+//           backgroundColor: 'transparent', // 透明背景
+//           fontWeight: 'bold'
+//         },
+//         labelLine: {
+//           show: false // 不显示指示线
+//         },
+//         data: [
+//           { value: data[0], name: '跌', itemStyle: { color: '#10b981' } }, // 绿色
+//           { value: data[1], name: '涨', itemStyle: { color: '#ef4444' } }  // 红色
+//         ]
+//       }
+//     ]
+//   }
+//   chart.setOption(option)
+//   window.addEventListener('resize', () => {
+//     chart.resize()
+//   })
+// }
 
 // -------------------------------------------------------------------
 const dataObjects = ref([
@@ -220,15 +327,14 @@ const dataObjects3 = ref([
   [4.502340, 4.500213, 4.506809, 4.511915, 4.517021, 4.521064, 4.529574, 4.530213, 4.536170, 4.539149, 4.539787, 4.545319, 4.556383, 4.568936, 4.584043, 4.605319, 4.635106, 4.665532], 
     ],
     chartData2: [],
+    
     dates: [ 
       '20250227', '20250228', '20250301', '20250302', '20250303', '20250304',
       '20250305', '20250306', '20250307', '20250308', '20250309', '20250310',
       '20250323', '20250324', '20250325', '20250326', '20250327', '20250328',
     ],
     chartData3: [],
-    similarity: 0.8721,
-    imagePath: '/savepng/demo.png'
-  },
+    similarity: 0.8721 },  
   {
     stockName: '中钢天源',
     stockCode: '002057',
@@ -254,10 +360,9 @@ const dataObjects3 = ref([
       '20250324', '20250325'
     ],
     chartData3: [],
-    similarity: 0.8055,
-    imagePath: '/savepng/demo.png'
+    similarity: 0.8055
   },
-  {
+      {
     stockName: '百川股份',
     stockCode: '002455',
     stockFrom: '系统匹配',
@@ -280,8 +385,7 @@ const dataObjects3 = ref([
       '20250324', '20250327', 
     ],
     chartData3: [],
-    similarity: 0.7820,
-    imagePath: '/savepng/demo.png'
+    similarity: 0.7820
   },
       {
     stockName: '利尔化学',
@@ -306,8 +410,7 @@ const dataObjects3 = ref([
       '20250324', '20250325'
     ],
     chartData3: [],
-    similarity: 0.7201,
-    imagePath: '/savepng/demo.png'
+    similarity: 0.7201
   },
       {
     stockName: 'ST宇顺',
@@ -332,8 +435,7 @@ const dataObjects3 = ref([
       '20250324', '20250325'
     ],
     chartData3: [],
-    similarity: 0.7064,
-    imagePath: '/savepng/demo.png'
+    similarity: 0.7064
   },
       {
     stockName: '润丰股份',
@@ -359,7 +461,7 @@ const dataObjects3 = ref([
       '20250324', '20250325'
     ],
     chartData3: [],
-    similarity: 0.6332,imagePath: '/savepng/demo.png', },
+    similarity: 0.6332 },
       {
     stockName: '杨杰科技',
     stockCode: '300373',
@@ -382,8 +484,7 @@ const dataObjects3 = ref([
       '20250308', '20250309', '20250310', '20250311', '20250312'
     ],
     chartData3: [],
-    similarity: 0.6002,
-    imagePath: '/savepng/demo.png'
+    similarity: 0.6002
   },
       {
     stockName: '航天智造',
@@ -409,8 +510,7 @@ const dataObjects3 = ref([
       '20250324', '20250325'
     ],
     chartData3: [],
-    similarity: 0.5782,
-    imagePath: '/savepng/demo.png'
+    similarity: 0.5782
   },
       {
     stockName: '久之洋',
@@ -435,8 +535,7 @@ const dataObjects3 = ref([
       '20250324', '20250325'
     ],
     chartData3: [],
-    similarity: 0.5722,
-    imagePath: '/savepng/demo.png'
+    similarity: 0.5722
   },
    {
     stockName: '金力泰',
@@ -458,47 +557,31 @@ const dataObjects3 = ref([
       '20250323', '20250324', '20250325'
     ],
     chartData3: [],
-    similarity: 0.4473,
-    imagePath: '/savepng/demo.png'
+    similarity: 0.4473
   },
 ]);
 
-
-
-// 监听vuex中的sim_stock_list,更新dataObjects3的数据
-watch(() => store.state.sim_stock_list, (newList) => {
-  console.log("-------watch sim_stock_list-------");
-  console.log(newList);
-  if (newList && newList.length > 0) {
-    dataObjects3.value = newList.map(item => ({
-      stockCode: item.stock_code,
-      stockName: item.stock_name,
-      stockFrom: '系统匹配',
-      startDate: '2025-03-01',
-      endDate: '2025-03-25',
-      chartData: item.recent_data || [], // 确保有默认空数组
-      similarity: item.similarity,
-      dates: item.dates || [], // 确保dates属性存在
-      dates2: [],
-      chartData3: [],
-      imagePath: '/savepng/demo.png'
-    }));
-
-    // 数据更新后初始化图表
-    nextTick(() => {
-      dataObjects3.value.forEach((item, rowIndex) => {
-        // 检查图表容器是否存在且数据有效
-        if (item.chartData && item.chartData.length > 0 && item.dates.length > 0) {
-          // 初始化第0列的图表
-          const index = rowIndex * 3 + 0;
-          if (chartRefs.value[index]) {
-            initChart3(index, rowIndex, 0);
-          }
-        }
-      });
-    });
+// 处理选择器变化
+const handleSelectChange = (row) => {
+  row.showCustomInput = false
+  row.customDays = ''
+  if (row.futureTime === 'custom') {
+    row.showCustomInput = true
   }
-}, { deep: true }); // 深度监听确保数组内部变化也能被捕获
+  console.log(`用户选择了: ${row.futureTime}`)
+}
+
+// 处理自定义时间输入
+const handleCustomInput = (row) => {
+  if (row.customDays && !isNaN(Number(row.customDays))) {
+    row.futureTime = Number(row.customDays)
+    console.log(`用户自定义时间: ${row.futureTime}天`)
+  } else {
+    row.futureTime = '3' // 默认恢复为3天
+    row.customDays = ''
+    console.log('输入无效，恢复默认值')
+  }
+}
 
 function transposeArray(array) {
     // 检查输入是否为有效的二维数组
@@ -730,6 +813,25 @@ const setChartRef = (el, rowIndex, colIndex) => {
   {
     initChart3(index, rowIndex, colIndex);
   }
+  // if (index % 3 === 0 || index % 3 === 1) {
+  //   initChart(index, rowIndex, colIndex);
+  // }
+  // if (index % 3 === 2) {
+  //   initChart2(index, rowIndex, colIndex);
+  // }
+};
+
+const setChartRef2 = (el, rowIndex, colIndex) => {
+  // const index = rowIndex * 3 + colIndex;
+  // chartRefs.value[index] = el;
+  // if(isHistorySearch.value === true)
+  // {
+  //   initChart(index, rowIndex, colIndex);
+  // }
+  // if(isChooseStock.value === true)
+  // {
+  //   initChart3(index, rowIndex, colIndex);
+  // }
 };
 
 const initChart = (index, rowIndex, colIndex, retryCount = 0) => {
@@ -824,111 +926,77 @@ const initChart3 = (index, rowIndex, colIndex, retryCount = 0) => {
     try {
       const myChart = echarts.init(chartRefs.value[index]);
       let chartData;
-      let dates = [];
-      
-      // 增加数据校验
-      if (!dataObjects3.value[rowIndex]) {
-        console.error(`dataObjects3[${rowIndex}] 不存在`);
-        return;
-      }
-      
       if (colIndex === 0) {
         chartData = dataObjects3.value[rowIndex].chartData;
-        // dates = dataObjects3.value[rowIndex].dates;
       } else if (colIndex === 1) {
         chartData = dataObjects3.value[rowIndex].chartData2;
-        // dates = dataObjects3.value[rowIndex].dates2 || dataObjects3.value[rowIndex].dates;
       }
-      
-      // 校验图表数据和日期数据
-      if (!chartData || !Array.isArray(chartData) || chartData.length === 0) {
-        console.error(`chartData 数据无效: ${JSON.stringify(chartData)}`);
-        return;
-      }
-      
-      // if (!dates || !Array.isArray(dates) || dates.length === 0) {
-      //   console.error(`dates 数据无效: ${JSON.stringify(dates)}`);
-      //   return;
-      // }
-      
-      // 计算所有数据中的最小值和最大值，增加空数据处理
-      const allValues = [].concat(...chartData.filter(series => series && Array.isArray(series)));
-      if (allValues.length === 0) {
-        console.warn("没有有效数据可显示");
-        return;
-      }
-      
+      // 计算所有数据中的最小值和最大值
+      const allValues = [].concat(...chartData);
       const minValue = Math.min(...allValues);
       const maxValue = Math.max(...allValues);
+      // 添加一些边距，使图表更美观
       const padding = (maxValue - minValue) * 0.1;
       
       const option = {
         xAxis: {
           type: 'category',
-          data: dates,
-          show: false,
+          data: dataObjects3.value[rowIndex].dates,
         },
         yAxis: {
           type: 'value',
-          axisTick: { show: false },
-          axisLabel: { show: false },
-          min: minValue - padding,
-          max: maxValue + padding
+          axisTick: { show: false }, // 隐藏 y 轴刻度
+          axisLabel: { show: false }, // 隐藏 y 轴坐标值
+          min: minValue - padding,    // 设置纵轴最小值
+          max: maxValue + padding     // 设置纵轴最大值
         },
+        
         series: [
           {
             name: 'MA4',
-            data: chartData[0] || [],
+            data: chartData[0],
             type: 'line',
-            lineStyle: { width: 1, color:'#cd1f0e' },
-            showSymbol: false
+            lineStyle: { width: 1, color:'#cd1f0e' },// 减小曲线粗细
+            showSymbol: false // 新增配置，去掉数据圆点
           },
           {
             name: 'MA8',
-            data: chartData[1] || [],
+            data: chartData[1],
             type: 'line',
-            lineStyle: { width: 1 , color:'#edbf09'},
-            showSymbol: false
+            lineStyle: { width: 1 , color:'#edbf09'},// 减小曲线粗细
+            showSymbol: false // 新增配置，去掉数据圆点
           },
           {
             name: 'MA12',
-            data: chartData[2] || [],
+            data: chartData[2],
             type: 'line',
-            lineStyle: { width: 1 ,color:'#62c613'},
-            showSymbol: false
+            lineStyle: { width: 1 ,color:'#62c613'},// 减小曲线粗细
+            showSymbol: false // 新增配置，去掉数据圆点
           },
-          // 只添加存在的均线数据
-          ...(chartData[3] ? [{
+          {
             name: 'MA16',
             data: chartData[3],
             type: 'line',
-            lineStyle: { width: 1, color:'#1286ff' },
-            showSymbol: false
-          }] : []),
-          ...(chartData[4] ? [{
+            lineStyle: { width: 1, color:'#1286ff' },// 减小曲线粗细
+            showSymbol: false // 新增配置，去掉数据圆点
+          },
+          {
             name: 'MA20',
             data: chartData[4],
             type: 'line',
-            lineStyle: { width: 1 ,color:'#9f12ff'},
-            showSymbol: false
-          }] : []),
-          ...(chartData[5] ? [{
+            lineStyle: { width: 1 ,color:'#9f12ff'},// 减小曲线粗细
+            showSymbol: false // 新增配置，去掉数据圆点
+          },
+          {
             name: 'MA47',
             data: chartData[5],
             type: 'line',
-            lineStyle: { width: 1,color:'#000000' },
-            showSymbol: false
-          }] : [])
+            lineStyle: { width: 1,color:'#000000' },// 减小曲线粗细
+            showSymbol: false // 新增配置，去掉数据圆点
+          },
         ]
       };
-      
       myChart.setOption(option);
-      
-      // 添加窗口大小变化时重绘图表
-      window.addEventListener('resize', () => {
-        myChart.resize();
-      });
-      
     } catch (error) {
       console.error('ECharts 初始化出错:', error);
     }
