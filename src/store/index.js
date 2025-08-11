@@ -7,6 +7,7 @@ const store = createStore({
         sim_stock_list:[], // 模式相似股票列表
         // 新的用户查找信息
         newSearchInfo:{
+            ifSet: false, // 是否设置了自定义相似性参数
             baseFolder: 'savepng', // 基准文件夹
             selectedFactor: null, // 选择的系统默认因素
             selectedFactor2: null, // 选择的自定义因素
@@ -1750,7 +1751,7 @@ const store = createStore({
             {
                 index:'self_mode_1',
                 name: '自定义模式1',
-                lines: ["MA8", "MA12", "MA16", "MA20", "MA47"],
+                lines: ["MA4","MA8", "MA12", "MA16", "MA20", "MA47"],
                 modeFolder:'self_mode_1', // 保存刷选区间的文件夹
                 selectedFactor : null,
                 selectedFactor2 : null,
@@ -1761,7 +1762,7 @@ const store = createStore({
             {
                 index:'self_mode_2',
                 name: '自定义模式2',
-                lines: ["MA8", "MA12", "MA16", "MA20", "MA47"],
+                lines: ["MA4","MA8", "MA12", "MA16", "MA20", "MA47"],
                 modeFolder:'self_mode_2', // 保存刷选区间的文件夹
                 selectedFactor : null,
                 selectedFactor2 : null,

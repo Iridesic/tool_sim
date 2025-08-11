@@ -315,7 +315,7 @@
 
             <!-- 文字多选题部分保持不变 -->
             <div v-if="qaMode === 'text'" style="color: black; font-size: 14px;">
-              <h4 style="margin-top: 0px;">在比较两个股票片段是否相似时，您考虑到的因素是？（可多选）</h4>
+              <h4 style="margin-top: 0px;">在比较两个股票片段是否相似时，您考虑到的因素是？（可多选，默认为全选）</h4>
               <el-table
                 ref="multipleTableRef"
                 :data="tableDataMultiple"
@@ -575,6 +575,15 @@ const handleClose = (done) => {
 
 // 更新可见性
 const onUpdateVisible = (newValue) => {
+  // 重置所有状态
+  currentCard.value = 1;
+  qaMode.value = 'text';
+  supplementaryOption.value = '';
+  multipleSelection.value = [];
+  tableDataMultiple.value.forEach(item => {
+    item.weight = 0;
+  });
+  
   emit("close");
   emit("update:model-value", false);
 };
@@ -585,6 +594,9 @@ const dateRange = ref([new Date('2016-01-02'), new Date('2016-06-20')]);
 
 const searchInfo = store.state.searchInfo;
 const onConfirm = () => {
+  store.commit("updateNewSearchInfo", {
+    ifSet: true,
+  });
   if (qaMode.value === 'text') {
     console.log('=== 文字问答答案 ===');
     

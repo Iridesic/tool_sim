@@ -578,7 +578,8 @@ const getShowDialog = () => {
   showDialog.value = true;
 };
 
-const getResult = async() => {
+
+const doResult = async() => {
   if(isChooseStock.value === true)
   {
     isGetResult.value = true;
@@ -715,7 +716,33 @@ const getResult = async() => {
       success: false,
       message: errorMsg
     };
+  }
+}
 
+const getResult = async() => {
+  if (store.state.newSearchInfo.ifSet === false) {
+  // 弹出带确定和取消按钮的确认窗口
+  ElMessageBox.confirm(
+    '未设置相似配置，将使用默认配置进行查找，是否继续？',
+    '提示',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'info' // 可选，设置弹窗图标类型
+    }
+  )
+  .then(() => {
+    // 点击确定按钮时执行的逻辑
+    doResult();
+  })
+  .catch(() => {
+    // 点击取消按钮时执行的逻辑（如果需要）
+    console.log('用户点击了取消，关闭弹窗');
+  });
+}
+  else{
+    doResult();
+   
   }
 };
 
