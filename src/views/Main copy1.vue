@@ -6,7 +6,7 @@
       </el-container>
       <el-container style="height: 94vh;">
         <el-aside>
-          <div style="height: 400px; background-color: #f3f3f3; border-radius: 10px; margin-top: 5px; margin-left: 5px;">
+          <div style="height: 290px; background-color: #f3f3f3; border-radius: 10px; margin-top: 5px; margin-left: 5px;">
             <el-tabs
               class="custom-tabs" v-model="activeName1" style="margin-left: 10px; width: 275px; "
             >
@@ -19,7 +19,7 @@
                 <el-table
                   :data="filteredTableData1(item)"
                   class="scrollable-div"
-                  max-height="300"
+                  max-height="200"
                   style="border-radius: 8px;"
                   border
                 >
@@ -80,12 +80,12 @@
                 <el-table
                   :data="filteredTableData2(item)"
                   style="
-                    height: 300px;
+                    height: 200px;
                     font-size: 12px;
                     margin-top: 5px;
                     border-radius: 8px;
                   "
-                  max-height="300" 
+                  max-height="200" 
                   border
                 >
                   <el-table-column
@@ -140,7 +140,7 @@
             </el-tabs>
           </div>
 
-          <div class="scrollable-div" style="height: 280px; background-color: #f3f3f3; margin-top: 5px; border-radius: 10px;margin-left: 5px; overflow-y: auto;">
+          <div class="scrollable-div" style="height: 350px; background-color: #f3f3f3; margin-top: 5px; border-radius: 10px;margin-left: 5px; overflow-y: auto;">
             <div style="height: auto;">
               <div class="div5 tour-ma-config">
                 <div
@@ -151,7 +151,7 @@
                     margin-top: 5px;
                   "
                 >
-                  基础 MA 指标设置:
+                  基础 MA 指标选择:
                 </div>
                 <el-checkbox-group
                   v-model="store.state.modeInfo.lines"
@@ -185,6 +185,24 @@
                   />
                 </el-select>
               </div>
+
+              <div v-if="isHistorySearch">
+                  <div class="div2" style="width: 200px; margin-left: -15px; margin-top: 5px;">设置查找历史时间范围：</div>
+                    <el-date-picker
+                      v-model="value2"
+                      type="daterange"
+                      range-separator="To"
+                      start-placeholder="Start date"
+                      end-placeholder="End date"
+                      size="small"
+                      style="
+                        width: calc(100% - 48px);
+                        margin-top: 5px;
+                        margin-left: -10px;
+                      "
+                      @change="handleDateChange2"
+                    />
+                </div>
               <div>
                 <div style="margin-top: 10px; margin-left: -3px;">
                   <div  style="margin-top: 10px">
@@ -194,141 +212,56 @@
                         class="custom-button btn-search-range"
                         style="margin-top: 0px; width: 270px; margin-left: -5px; font-size: 12px;"
                       >
-                        请选择待查找股票集
+                        请选择待查找股票集（默认为全部）
                       </el-button> 
                     <DialogChoose2
                       :visible="dialogVisible"
                       @close="dialogVisible = false"
                     />
+                     <el-table
+                      :data="tableDataRecent"
+                      class="scrollable-div"
+                      :max-height="tableDataRecent.length > 0 ? 180 : 100" 
+                      style="margin-left: 8px; margin-top: 10px; border-radius: 10px; width: 280px; margin-bottom: 10px;"
+                      border
+                      >
+                      <el-table-column
+                        property="index"
+                        fixed="left"
+                        label="股票名称"
+                        width="140px"
+                        header-align="center"
+                        align="center"
+                      >
+                        <template #default="scope">
+                            <span style="font-size: 14px" @click="handleRowClick(scope.row)">{{ scope.row.name }}</span>
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        property="code"
+                        label="股票代码"
+                        width="140px"
+                        header-align="center"
+                        align="center"
+                      >
+                        <template #default="scope">
+                          <span style="font-size: 13px">{{ scope.row.code }}</span>
+                        </template>
+                      </el-table-column>
+                    </el-table>
                   </div>
                 </div>
 
-                <div v-if="isHistorySearch">
-                  <div class="div2" style="width: 200px; margin-left: -15px; margin-top: 5px;">设置查找历史时间范围：</div>
-                  <el-date-picker
-                    v-model="value2"
-                    type="daterange"
-                    range-separator="To"
-                    start-placeholder="Start date"
-                    end-placeholder="End date"
-                    size="small"
-                    style="
-                      width: calc(100% - 48px);
-                      margin-top: 5px;
-                      margin-left: -10px;
-                    "
-                    @change="handleDateChange2"
-                  />
-                </div>
+                
               </div>
-
-
-              
               <DialogBullish
                 :visible ="showDialog"
                 @close="showDialog = false"
               />
-
-              <div v-if="isGetResult">
-                <div style="font-size: 13px; font-weight: 700; color:#8c8c8c; background-color: #ededed; padding: 1px; width: 275px; margin-left: 10px; margin-top: 10px;">|    相似股票筛选结果 ————————————</div>
-                <el-table
-                  :data="tableDataRecent"
-                  class="scrollable-div"
-                  max-height="295px"
-                  style="margin-left: 10px; margin-top: 10px; border-radius: 10px; width:275px; margin-bottom: 10px;"
-                  border
-                >
-                  <el-table-column
-                    property="index"
-                    label="股票名称"
-                    :width="getColumnWidth(0.35)"
-                    header-align="center"
-                    
-                  >
-                    <template #default="scope">
-                        <div style="height: 6px;"></div>
-                        <span style="font-size: 13px; padding: 2px;" @click="handleRowClick1(scope.row)">{{ scope.row.name }}</span>
-                        <div style="height: 6px;"></div>
-                      </template>
-                  </el-table-column>
-                  <el-table-column
-                    property="code"
-                    label="股票代码"
-                    :width="getColumnWidth(0.35)"
-                    header-align="center"
-                  >
-                    <template #default="scope">
-                      <span style="font-size: 12px">{{ scope.row.code }}</span>
-                    </template>
-                  </el-table-column>
-                  <el-table-column
-                    property="similarity"
-                    label="相似程度"
-                    :width="getColumnWidth(0.32)"
-                    header-align="center"
-                  >
-                    <template #default="scope">
-                      <el-button 
-                        size="small" 
-                        type="warning" 
-                      >
-                        {{ scope.row.sim }}
-                      </el-button>
-                    </template>
-                  </el-table-column>
-                </el-table>
-              </div>
-              <!--历史查找-->
-              <!-- <div v-if="isGetResult2">
-                <div style="font-size: 13px; font-weight: 700; color:#8c8c8c; background-color: #ededed; padding: 1px; width: 275px; margin-left: 10px; margin-top: 10px;">|    相似股票筛选结果 ————————————</div>
-                <el-table
-                  :data="tableDataRecent1"
-                  class="scrollable-div"
-                  max-height="295px"
-                  style="margin-left: 10px; margin-top: 10px; border-radius: 10px; width:275px; margin-bottom: 10px;"
-                  border
-                >
-                  <el-table-column
-                    property="index"
-                    label="股票名称"
-                    :width="getColumnWidth(0.32)"
-                    header-align="center"
-                    
-                  >
-                    <template #default="scope">
-                        <div style="height: 6px;"></div>
-                        <span style="font-size: 13px; padding: 2px;" @click="handleRowClick1(scope.row)">{{ scope.row.name }}</span>
-                        <div style="height: 6px;"></div>
-                      </template>
-                  </el-table-column>
-                  <el-table-column
-                    property="code"
-                    label="股票代码"
-                    :width="getColumnWidth(0.35)"
-                    align="center"
-                    header-align="center"
-                  >
-                    <template #default="scope">
-                      <span style="font-size: 12px">{{ scope.row.code }}</span>
-                    </template>
-                  </el-table-column>
-                  <el-table-column
-                    property="count"
-                    label="相似结果数"
-                    :width="getColumnWidth(0.4)"
-                    align="center"
-                    header-align="center"
-                    
-                  >
-                    <template #default="scope">
-                      <span style="font-size: 12px; text-align: center;">{{ scope.row.count }}</span>
-                    </template>
-                  </el-table-column>
-                </el-table>
-              </div> -->
             </div>
           </div>
-
+            <el-button @click="getShowDialog" type="primary" plain style="font-size: 12px; width: 140px; height: 30px; margin-left: 0px; margin-top: 5px;" >相似特征确认</el-button>
+            <el-button type="success" plain style="margin-left: 0px; font-size: 12px; width: 140px;height: 30px; margin-left: 5px;margin-top: 5px;" @click="getResult">开始查找</el-button>
         </el-aside>
         <el-main
           style="background-color: white; padding: 0; position: relative; height: 100%; min-height: 0;"
@@ -380,6 +313,7 @@
               </div>
             </div>
           </div>
+          
           <div style="display: flex; margin-top: 20px; width: 100%; justify-content: center; align-items: flex-start;">
             <div style="width: 1000px; gap: 0px; margin-top: 0px; margin-left: -60px;">
                 <Graph
@@ -397,10 +331,10 @@
                   @brush-updated="handleBrushUpdated" 
                   :savedBrushes="savedBrushAreas"
                   /> 
-              <div style="display: flex;">
-                <div style="border: 1px solid #cbcbcb; height: 140px; width: 900px; margin-top: -160px; margin-left: 80px; border-radius: 5px; overflow: hidden;">
+                <div style="border: 1px solid #cbcbcb; height: 150px; width: 90%; margin-top: -170px; margin-left: 80px; border-radius: 5px; overflow: hidden;">
                   <!-- 为图片列表添加容器并应用Flex布局 -->
-                  <div style="display: flex; height: 140px; align-items: center; padding: 0 15px; overflow-x: auto; scrollbar-width: none;">
+                  <span style="font-size: 12px; color: white; margin-left: -400px; background-color: #bdbdbd;">本区域展示相似查找基准选区，可截图选择一个基准区域进行查找或综合多个区域进行查找</span>
+                  <div style="display: flex; height: 140px; align-items: center; padding: 0 15px; overflow-x: auto; scrollbar-width: none; margin-top: 10px;">
                     <div v-for="img in imageList" :key="img.filename" class="image-gallery" style="margin-right: 15px; flex-shrink: 0;">
                       <img 
                         :src="img.url" 
@@ -410,17 +344,8 @@
                         style="width: 200px; height: 200px; object-fit: cover; border-radius: 3px; margin-top: 28px;"
                         @error="handleImageError(img)"
                       >
-                    </div>
                   </div>
-                </div> 
-
-                
-                <div style=" height: 140px; width: 60px; margin-top: -160px; margin-left: 10px; border-radius: 5px; overflow: hidden;">
-                  <div style="margin-left: -70px;">
-                    <el-button @click="getShowDialog" type="primary" plain style="position: absolute; z-index: 12; font-size: 12px; width: 60px; height: 70px;" >相似<br>特征<br>确认</el-button>
-                    <el-button type="success" plain style="position: absolute; z-index: 12; margin-left: 0px; font-size: 12px; width: 60px; margin-top: 72px; height: 69px" @click="getResult">开始<br>查找</el-button>
-                  </div>
-                </div> 
+                </div>
               </div>
     
               </div>
@@ -443,7 +368,7 @@
               清空选取结果
             </el-button>
           </div>
-          <hr style="margin-top:10px; margin-bottom: 0px;"/>
+          <hr style="margin-top:5px; margin-bottom: 0px;"/>
           <ResultShow v-if="resultType"/>
         </el-main>
       </el-container>
@@ -490,6 +415,8 @@ const options = [
 const handleRecentNDaysChange = (value) => {
     console.log('通过v-model获取的选中值:', recentNDaysValue.value);
 };
+
+
 
 const showDialog = ref(false);
 
@@ -562,16 +489,19 @@ const handleImageError = (img) => {
 const fetchImages = async () => {
   const timestamp = new Date().getTime();
   const API_BASE_URL = 'http://127.0.0.1:5000';
+  const folderName = store.state.newSearchInfo.baseFolder;
+
   try {
     loading.value = true;
-    const response = await axios.get(`${API_BASE_URL}/get_all_screenshots?timestamp=${timestamp}`);
-    
+    const params = new URLSearchParams();
+    params.append('timestamp', timestamp);
+    params.append('folder', folderName);
+    // const response = await axios.get(`${API_BASE_URL}/get_all_screenshots?timestamp=${timestamp}`);
+    const response = await axios.get(`${API_BASE_URL}/get_all_screenshots`,{params});
     if (response.data.success) {
       // 处理图片列表，修正URL并编码特殊字符
       imageList.value = response.data.images.map(image => ({
         ...image,
-        // 1. 使用完整URL避免相对路径问题
-        // 2. 对文件名名进行URL编码，处理空格、中文等特殊字符
         url: `${API_BASE_URL}/get_screenshot/${encodeURIComponent(image.filename)}`
       }));
     }
@@ -585,9 +515,8 @@ const fetchImages = async () => {
   } finally {
     loading.value = false;
   }
-};   
+}; 
 
-// 组件挂载时获取数据
 onMounted(() => {
   fetchImages();
 });
@@ -635,20 +564,6 @@ const filteredTableData2 = (item) => {
 };
 
 const tableDataRecent = ref([
-  { code: '002165', name: '红宝丽', weight: 3, sim: '极强' },
-  { code: '002057', name: '中钢天源', weight: 2, sim: '强' },
-  { code: '002455', name: '百川股份', weight: 2, sim: '强' },
-  { code: '000830', name: '鲁西化工', weight: 1, sim: '中' },
-  { code: '001207', name: '联科科技', weight: 0, sim: '弱' },
-])
-
-const tableDataRecent1 = ref([
-  { code: '001255', name: '博菲电器', count: 21 },
-  { code: '001333', name: '光华股份', count: 20 },
-  { code: '000830', name: '鲁西化工', count: 10 },
-  { code: '002913', name: '奥士康', count: 8 },
-  { code: '002106', name: '莱宝高科', count: 6 },
-  { code: '001207', name: '联科科技', count: 5 },
 ])
 
 const stockShowInfo = ref();
@@ -672,16 +587,36 @@ const getResult = async() => {
   {
     isGetResult2.value = true;
   }
-  store.commit("updateNewSearchInfo", {
-    savedBrushTimeRanges: savedBrushTimeRanges.value,
-    recentNDaysValue: recentNDaysValue.value
+  const oriLines = store.state.modeInfo.lines;
+  const maNumbers = oriLines
+  // 过滤掉"个股"项，只保留MA开头的元素
+  .filter(item => item.startsWith('MA'))
+  // 提取每个MA项中的数字部分并转换为Number类型
+  .map(maItem => {
+    // 从"MAx"中提取数字部分（去掉前两个字符"MA"）
+    const numberStr = maItem.slice(2);
+    // 转换为数字
+    return Number(numberStr);
   });
+  if(store.state.newSearchInfo.savedBrushTimeRanges.value === null){
+    store.commit("updateNewSearchInfo", {
+      savedBrushTimeRanges: savedBrushTimeRanges.value,
+      recentNDaysValue: recentNDaysValue.value,
+      lines: maNumbers,
+    });
+  }
+  else{
+    store.commit("updateNewSearchInfo", {
+      recentNDaysValue: recentNDaysValue.value,
+      lines: maNumbers,
+    });
+  }
+
   console.log('===== 查找配置已保存 =====');
   console.log('查找配置', store.state.newSearchInfo);
   const target = toRaw(store.state.newSearchInfo);
   console.log(target);
   resultType.value = true;
-  
   const API_BASE_URL = 'http://127.0.0.1:5000';
   const timestamp = new Date().getTime();
   
@@ -689,6 +624,7 @@ const getResult = async() => {
     // 显示加载状态
     const loading = true;
     console.log('开始查询相似股票...');
+    console.log('目标:', target.savedBrushTimeRanges);
     
     // 发送POST请求
     const response = await axios.post(
@@ -698,7 +634,7 @@ const getResult = async() => {
         start_date: target.savedBrushTimeRanges[0].startDate,
         end_date: target.savedBrushTimeRanges[0].endDate,
         n_days: target.recentNDaysValue,
-        // ma_list: target.maList,
+        ma_list: target.lines,
       },
       {
         headers: {
@@ -782,6 +718,19 @@ const getResult = async() => {
 
   }
 };
+
+// 监控vuex中newSearchInfo的变化
+watch(() => store.state.newSearchInfo,
+  (newVal) => {
+      recentNDaysValue.value = newVal.recentNDaysValue;
+      console.log(store.state.newSearchInfo.baseFolder);
+      fetchImages(); // 每次变化后重新获取图片
+  },
+  {
+    immediate: true, // 初始化时立即执行一次
+    deep: true // 深度监听对象内部变化
+  }
+);
 
 const handleRowClick = async (row) => {
   const code = row.code;

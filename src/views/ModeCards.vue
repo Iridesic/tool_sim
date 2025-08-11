@@ -66,16 +66,59 @@
       </el-tab-pane>
       <el-tab-pane label="自定义模式" name="index1">
         <div class="scrollable-div">
-          <el-card style="height: 60px; width: 210px; margin-bottom: 10px;" @click="handleCardClick1()">
-            <span style="margin-top: -60px; font-size: 13px; font-weight: bold; cursor: pointer;">自定义模式1</span>
+          <el-card
+            v-for="(item, index) in modeListSelf"
+            :key="index"
+            style="margin-bottom: 10px;margin-left: 0px;width: 210px; height: 50px;"
+          >
+              <div
+                @click="handleCustomCardClick(item, index)"
+                class="mode-card-title"
+                style="margin-top: -5px; font-size: 13px; font-weight: bold; cursor: pointer;"
+              >
+                {{ item.name }}
+              </div>
+
           </el-card>
-          <el-card style="height: 60px; width: 210px; margin-bottom: 10px;" @click="handleCardClick2()">
-            <span style="margin-top: -60px; font-size: 13px; font-weight: bold; cursor: pointer;">自定义模式2</span>
-          </el-card>
-          <el-card style="height: 60px; width: 210px; margin-bottom: 10px;" @click="handleCardClick3()">
-            <span style="margin-top: -60px; font-size: 13px; font-weight: bold; cursor: pointer;">自定义模式3</span>
-          </el-card>
-          
+          <!-- 自定义模式专用对话框 -->
+          <el-dialog 
+            v-model="customDialogVisible" 
+            :append-to-body="true"
+            :destroy-on-close="true" 
+            @open="handleCustomDialogOpen"
+            class="modecards-dialog-tour"
+          >
+            <template #title>{{ customDialogTitle }}</template>
+            <hr/>
+            <el-table :data="customTableData" stripe border style="margin-bottom: 20px;">
+              <el-table-column header-align="center" align="center" prop="name" label="模式名称" width="140" />
+              <el-table-column header-align="center" align="center" prop="index" label="模式代码" width="140" />
+              <el-table-column header-align="center" align="center" prop="lines" label="均线列表" width="240"/>
+              <!--可添加其他用户自定义的相似性匹配参数-->
+              <el-table-column header-align="center" align="center" prop="recentNDaysValue" label="选股考察区间（近N天）" width="200"/>
+            </el-table>
+            <span style="font-size: 13px; color: black; margin-left: 10px;">该自定义模式的查找基准区间</span>
+            <div style="border: 1px solid #cbcbcb; height: 180px; width: 100%;  margin-left: 0px; margin-top: 5px; border-radius: 5px; overflow: hidden;">
+              
+              <div style="display: flex; height: 170px; align-items: center; padding: 0 15px; overflow-x: auto; scrollbar-width: none; margin-top: 10px;">
+                <div v-for="img in imageList" :key="img.filename" class="image-gallery" style="margin-right: 15px; flex-shrink: 0;">
+                  <img 
+                    :src="img.url" 
+                    :alt="img.filename" 
+                    :title="img.filename"
+                    class="screenshot-img"
+                    style="width: 260px; height: 260px; object-fit: cover; border-radius: 3px; margin-top: 28px;"
+                    @error="handleImageError(img)"
+                  >
+                </div>
+              </div>
+            </div>
+            <template #footer>
+                <el-button @click="handleApplyMode2" class="apply-mode-btn-step2">历史查找</el-button>
+                <el-button @click="handleApplyMode3" class="apply-mode-btn-step2">模式选股</el-button>
+            </template>
+          </el-dialog>
+          <!-- 推荐模式专用对话框 -->
           <el-dialog 
             v-model="dialogVisible" 
             :append-to-body="true"
@@ -95,7 +138,7 @@
             </el-table>
             <div ref="dialogChartRef" style="width: 700px; height: 300px; margin-top: -40px; margin-bottom: -40px;"></div>
             <template #footer>
-                <el-button style="position: relative; z-index: 1;" @click="handleApplyMode" class="apply-mode-btn-step2">历史查找</el-button>
+                <el-button @click="handleApplyMode" class="apply-mode-btn-step2">历史查找</el-button>
                 <el-button @click="handleApplyMode1" class="apply-mode-btn-step2">模式选股</el-button>
             </template>
           </el-dialog>
@@ -107,8 +150,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick, watch, defineProps, defineEmits } from "vue";
+import { ref, onMounted, nextTick, watch, defineProps, defineEmits,toRaw } from "vue";
 import { useStore } from "vuex";
+import axios from "axios";
 import * as echarts from "echarts";
 
 const store = useStore();
@@ -124,6 +168,55 @@ const modeList = store.state.modeList.map((item) => {
     lines: item.lines,
   };
 });
+
+const modeListSelf = store.state.modeListSelf.map((item) => {
+  return {
+    name: item.name,
+    index: item.index,
+    modeFolder: item.modeFolder,
+    selectedFactor: item.selectedFactor,
+    selectedFactor2: item.selectedFactor2,
+    photoOption: item.photoOption,
+    savedBrushTimeRanges: item.savedBrushTimeRanges,
+    recentNDaysValue: item.recentNDaysValue,
+    lines: item.lines,
+  };
+});
+
+// 图片获取 ==========================================================
+const imageList = ref([]);
+const loading = ref(true);
+// 获取图片列表函数（修改版）
+const fetchImages = async () => {
+  const timestamp = new Date().getTime();
+  const API_BASE_URL = 'http://127.0.0.1:5000';
+  const folderName = toRaw(customTableData.value)[0].index;
+
+  try {
+    loading.value = true;
+    const params = new URLSearchParams();
+    params.append('timestamp', timestamp);
+    params.append('folder', folderName);
+    // const response = await axios.get(`${API_BASE_URL}/get_all_screenshots?timestamp=${timestamp}`);
+    const response = await axios.get(`${API_BASE_URL}/get_all_screenshots`,{params});
+    if (response.data.success) {
+      // 处理图片列表，修正URL并编码特殊字符
+      imageList.value = response.data.images.map(image => ({
+        ...image,
+        url: `${API_BASE_URL}/get_screenshot/${encodeURIComponent(image.filename)}`
+      }));
+    }
+  } catch (err) {
+    console.error('获取图片失败:', err);
+    // 更详细的错误信息输出
+    if (err.response) {
+      console.error('错误状态码:', err.response.status);
+      console.error('错误内容:', err.response.data);
+    }
+  } finally {
+    loading.value = false;
+  }
+};   
 
 const modeInfo = store.state.modeInfo;
 
@@ -151,7 +244,6 @@ let cssRule = null;
 const handleApplyMode = () => {
   // 处理应用模式的逻辑
   console.log("应用模式:", modeList[currentChartIndex.value]);
-  console.log('startDate 类型:', typeof modeInfo.startDate); // 应输出 'string'
   store.commit('updateModeInfo', {
     index: modeList[currentChartIndex.value].index,
     name: modeList[currentChartIndex.value].name,
@@ -161,8 +253,6 @@ const handleApplyMode = () => {
     lines1: ["深证指数", ...modeList[currentChartIndex.value].lines],
     lines2: ["行业指数", ...modeList[currentChartIndex.value].lines],
     isMode: true,
-    startDate: '2024-05-04',
-    endDate: '2024-05-08',
     minDays: modeList[currentChartIndex.value].minDays,
   });
   store.commit("updateBaseInfo", {
@@ -184,6 +274,7 @@ const handleApplyMode = () => {
   // 添加边框样式
   cssRule.style.border = '1px solid gray';
   dialogVisible.value = false;
+  customDialogVisible.value = false;
 };
 
 const handleApplyMode1 = () => {
@@ -221,6 +312,91 @@ const handleApplyMode1 = () => {
   // 添加边框样式
   cssRule.style.border = '1px solid gray';
   dialogVisible.value = false;
+  customDialogVisible.value = false;
+};
+
+// 自定义模式对话框打开时的处理函数 =============================================
+// 历史查找
+const handleApplyMode2 = () => {
+  // 自定义模式不提供默认查找区间
+  store.state.modeInfo.startDate = null;
+  store.state.modeInfo.endDate = null;
+  console.log("应用模式:", modeListSelf[currentChartIndex.value]);
+  store.commit('updateModeInfo', {
+    index: modeListSelf[currentChartIndex.value].index,
+    name: modeListSelf[currentChartIndex.value].name,
+    lines: ["个股", ...modeListSelf[currentChartIndex.value].lines],
+    isMode: false,
+    isSelected: true,
+  });
+
+  store.commit('updateNewSearchInfo', {
+    recentNDaysValue: modeListSelf[currentChartIndex.value].recentNDaysValue,
+    baseFolder: modeListSelf[currentChartIndex.value].index,
+  });
+  
+  
+  store.commit("updateBaseInfo", {
+    isMode: true,
+    isStock: false,
+    currentFunction:"推荐模式查找",
+    isDisabled: true,
+    isChooseStock: false,
+    isHistorySearch: true,
+  });
+  if (!cssRule) {
+    // 查找 .div-custom 规则
+    cssRule = findDivCustomRule();
+    if (!cssRule) {
+      console.error('未找到 .div-custom 样式规则');
+      return;
+    }
+  }
+  // 添加边框样式
+  cssRule.style.border = '1px solid gray';
+  dialogVisible.value = false;
+  customDialogVisible.value = false;
+};
+
+const handleApplyMode3 = () => {
+  // 处理应用模式的逻辑
+  store.state.modeInfo.startDate = null;
+  store.state.modeInfo.endDate = null;
+  console.log("应用模式:", modeListSelf[currentChartIndex.value]);
+  store.commit('updateModeInfo', {
+    index: modeListSelf[currentChartIndex.value].index,
+    name: modeListSelf[currentChartIndex.value].name,
+    lines: ["个股", ...modeListSelf[currentChartIndex.value].lines],
+    isMode: false,
+    isSelected: true,
+  });
+
+  store.commit('updateNewSearchInfo', {
+    recentNDaysValue: modeListSelf[currentChartIndex.value].recentNDaysValue,
+    baseFolder: modeListSelf[currentChartIndex.value].index,
+    savedBrushTimeRanges: modeListSelf[currentChartIndex.value].savedBrushTimeRanges,
+  });
+  store.commit("updateBaseInfo", {
+    isMode: true,
+    isStock: false,
+    currentFunction:"推荐模式查找",
+    isDisabled: true,
+    isHistorySearch: false,
+    isChooseStock: true,
+  });
+  if (!cssRule) {
+    // 查找 .div-custom 规则
+    cssRule = findDivCustomRule();
+    if (!cssRule) {
+      console.error('未找到 .div-custom 样式规则');
+      return;
+    }
+  }
+  console.log('新的自定义区间', store.state.newSearchInfo.savedBrushTimeRanges);
+  // 添加边框样式
+  cssRule.style.border = '1px solid gray';
+  dialogVisible.value = false;
+  customDialogVisible.value = false;
 };
 
 
@@ -236,8 +412,13 @@ const tableData = ref([
   },
 ]); 
 
+const customTableData = ref([
+]);
+
 const dialogVisible = ref(false);
+const customDialogVisible = ref(false);
 const dialogTitle = ref('');
+const customDialogTitle = ref('');
 let currentChartIndex = ref(null);
 const dialogChartRef = ref(null);
 const chartRefs = ref([]); 
@@ -256,6 +437,21 @@ const handleCardClick = (item, index) => {
       minDays: item.minDays,
       isConsecutive: item.isConsecutive,
     }]
+};
+
+const handleCustomCardClick = (item, index) => {
+  // 显示自定义模式弹窗
+  customDialogVisible.value = true;
+  // 设置弹窗标题和内容
+  customDialogTitle.value = item.name;
+  currentChartIndex.value = index;
+  customTableData.value = [{
+      name: item.name,
+      index: item.index,
+      lines: item.lines,
+      recentNDaysValue: item.recentNDaysValue,
+    }]
+  fetchImages(); // 获取对应的图片列表
 };
 
 const handleCardClick1 = (item, index) => {
@@ -443,14 +639,15 @@ const renderChart = (chartDom, dataIndex) => {
 };
 
 onMounted(() => {
-      modeList.forEach((_, index) => {
-        const chartDom = chartRefs.value[index];
-        if (chartDom) {
-          renderChart(chartDom, index);
-        } else {
-          console.error(`Invalid DOM element at index ${index}`);
-        }
+    modeList.forEach((_, index) => {
+      const chartDom = chartRefs.value[index];
+      if (chartDom) {
+        renderChart(chartDom, index);
+      } else {
+        console.error(`Invalid DOM element at index ${index}`);
+      }
     });
+  
 });
 
 const renderDialogChart = () => {
@@ -554,5 +751,12 @@ const handleModeTourChange = (current, prev) => {
   font-size: 13px;
   text-align: center;
 } 
+
+.image-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 20px;
+}
 
 </style>

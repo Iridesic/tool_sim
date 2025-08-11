@@ -7,12 +7,14 @@ const store = createStore({
         sim_stock_list:[], // 模式相似股票列表
         // 新的用户查找信息
         newSearchInfo:{
+            baseFolder: 'savepng', // 基准文件夹
             selectedFactor: null, // 选择的系统默认因素
             selectedFactor2: null, // 选择的自定义因素
             supplementaryOption: null, // 补充选项
             photoOption: [], // 图片选项
             savedBrushTimeRanges: [], // 保存的刷选时间区间
-            recentNDaysValue: 0, // 最近N天的值
+            recentNDaysValue: '--', // 最近N天的值
+            lines:[],
         },
 
         baseInfo:{
@@ -1743,6 +1745,34 @@ const store = createStore({
             //     minDays: 3,
             // },
         ],
+        // 自定义模式列表【用户可以自定义保存的模式，基于newSearchInfo添加几个指标项建立】
+        modeListSelf:[
+            {
+                index:'self_mode_1',
+                name: '自定义模式1',
+                lines: ["MA8", "MA12", "MA16", "MA20", "MA47"],
+                modeFolder:'self_mode_1', // 保存刷选区间的文件夹
+                selectedFactor : null,
+                selectedFactor2 : null,
+                photoOption: [],
+                savedBrushTimeRanges: [{code: '000021', startDate: '2025-01-17', endDate: '2025-03-05', saveTime: 1754902645071}],
+                recentNDaysValue: '近20天',
+            },
+            {
+                index:'self_mode_2',
+                name: '自定义模式2',
+                lines: ["MA8", "MA12", "MA16", "MA20", "MA47"],
+                modeFolder:'self_mode_2', // 保存刷选区间的文件夹
+                selectedFactor : null,
+                selectedFactor2 : null,
+                photoOption: [],
+                savedBrushTimeRanges: [
+                    {code: '000021', startDate: '2025-01-16', endDate: '2025-03-05', saveTime: 1754902744242},
+                    {code: '000021', startDate: '2025-01-07', endDate: '2025-02-27', saveTime: 1754902756597}
+                ],
+                recentNDaysValue: '近30天',
+            }
+        ],
     },
 
     // 用于修改 state 的方法，必须是同步的
@@ -1781,8 +1811,6 @@ const store = createStore({
                 modeClass: payload.modeClass,
                 modeDescription: payload.modeDescription,
                 minDays: payload.minDays,
-                startDate: payload.startDate, // 显式更新日期
-                endDate: payload.endDate      // 显式更新日期
             };
         },
         updateSearchInfo(state, newInfo) {
@@ -1897,9 +1925,14 @@ const store = createStore({
         getSearchInfo: (state) => state.searchInfo,
         getResultList: (state) => state.resultList,
         getModeList: (state) => state.modeList,
-        // 通过索引获取模式
+        getModeListSelf: (state) => state.modeListSelf,
+        // 通过索引获取系统默认模式
         getModeListByIndex: (state) => (index) => {
             return state.modeList.find(mode => mode.index === index);
+        },
+        // 通过索引获取自定义模式
+        getModeListSelfByIndex: (state) => (index) => {
+            return state.modeListSelf.find(mode => mode.index === index);
         },
         // 通过code获取股票信息
         getStockByCode: (state) => (code) => {
