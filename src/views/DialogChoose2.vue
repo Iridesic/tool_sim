@@ -48,7 +48,7 @@
                 <el-checkbox v-model="checkedItems[4]" @change="val => handleSelectAll(val, 4)">同板块</el-checkbox>
               </template>
               <div style="height: 160px; overflow-y: auto">
-                <el-table :ref="el => tableRefs[4].value = el" :data="tableData" @selection-change="val => handleSelectionChange(val, 4)">
+                <el-table :ref="el => tableRefs[4].value = el" :data="tableData2" @selection-change="val => handleSelectionChange(val, 4)">
                   <el-table-column
                     type="selection"
                     :selectable="selectable"
@@ -65,7 +65,7 @@
                 <el-checkbox v-model="checkedItems[5]" @change="val => handleSelectAll(val, 5)">同行业</el-checkbox>
               </template>
               <div style="height: 160px; overflow-y: auto">
-                <el-table :ref="el => tableRefs[5].value = el" :data="tableData" @selection-change="val => handleSelectionChange(val, 5)">
+                <el-table :ref="el => tableRefs[5].value = el" :data="tableData3" @selection-change="val => handleSelectionChange(val, 5)">
                   <el-table-column
                     type="selection"
                     :selectable="selectable"
@@ -141,6 +141,24 @@ const tableData = [
   { code: "002919", name: "名臣健康",from:"自选股票" },
 ];
 
+
+const tableData2 = [
+  { code: "300124", name: "汇川技术", from: "同板块" },
+  { code: "002027", name: "分众传媒", from: "同板块" },
+  { code: "000333", name: "美的集团", from: "同板块" },
+  { code: "000651", name: "格力电器", from: "同板块" },
+  { code: "002714", name: "牧原股份", from: "同板块" },
+];
+
+const tableData3 = [
+  { code: "002304", name: "洋河股份", from: "同行业" },
+  { code: "000895", name: "双汇发展", from: "同行业" },
+  { code: "000063", name: "中兴通讯", from: "同行业" },
+  { code: "002179", name: "中航光电", from: "同行业" },
+  { code: "002352", name: "顺丰控股", from: "同行业" },
+  { code: "002555", name: "三七互娱", from: "同行业" },
+]
+
 const selectable = (row, index) => {
   return true;
 };
@@ -173,7 +191,13 @@ function handleSelectAll(val, idx) {
     if (table) {
       if (val) {
         table.clearSelection();
-        tableData.forEach(row => table.toggleRowSelection(row, true));
+        if(idx === 3) {
+          tableData.forEach(row => table.toggleRowSelection(row, true));
+        } else if(idx === 4) {
+          tableData2.forEach(row => table.toggleRowSelection(row, true));
+        } else if(idx === 5) {
+          tableData3.forEach(row => table.toggleRowSelection(row, true));
+        }
       } else {
         table.clearSelection();
       }

@@ -599,15 +599,19 @@ const doResult = async() => {
     // 转换为数字
     return Number(numberStr);
   });
-  if(store.state.newSearchInfo.savedBrushTimeRanges.value === null){
+  console.log("store:", store.state.newSearchInfo.savedBrushTimeRanges);
+  console.log("cur:", toRaw(savedBrushTimeRanges).value);
+  if(toRaw(savedBrushTimeRanges).value.length === 0){
+    console.log("1111111111");
     store.commit("updateNewSearchInfo", {
-      savedBrushTimeRanges: savedBrushTimeRanges.value,
       recentNDaysValue: recentNDaysValue.value,
       lines: maNumbers,
     });
   }
   else{
+    console.log("2222222222");
     store.commit("updateNewSearchInfo", {
+      savedBrushTimeRanges: savedBrushTimeRanges.value,
       recentNDaysValue: recentNDaysValue.value,
       lines: maNumbers,
     });
@@ -742,7 +746,6 @@ const getResult = async() => {
 }
   else{
     doResult();
-   
   }
 };
 

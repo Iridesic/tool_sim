@@ -25,7 +25,7 @@
           <el-table-column label="股票来源" prop="stockFrom" width="100px"></el-table-column>
           <el-table-column label="起始时间" prop="startDate"  width="100px"></el-table-column>
           <el-table-column label="终止时间" prop="endDate"  width="100px"></el-table-column>
-          <el-table-column label="基准区域（默认选择首选区）" width="330px">
+          <el-table-column label="基准区域（选区集中相似程度最高）" width="330px">
             <!--显示从后台获取的图片-->
             <template #default="{ row }">
               <img :src="row.imagePath" alt="基准图片" style="width: 300px; height: 140px; margin-top: 30px; margin-bottom: 30px;">
@@ -37,7 +37,16 @@
               <div :ref="(el) => setChartRef(el, $index, 0)" style="width: 280px; height: 270px; margin-top: -30px; margin-bottom: -30px; margin-left: 0px;"></div>
             </template>
           </el-table-column>
-          <el-table-column label="相似度" prop="similarity"></el-table-column>
+           <el-table-column label="相似程度">
+            <template #default="scope">
+              <el-button 
+                :type="getButtonType(scope.row.similarity)"
+                size="small"
+              >
+                {{ getButtonText(scope.row.similarity) }}
+              </el-button>
+            </template>
+          </el-table-column>
       </el-table>
     </div>
   </div>
@@ -79,6 +88,31 @@ function getDateRange(dateStr) {
     }
     return range;
 }
+
+// 确定按钮类型（颜色）
+const getButtonType = (similarity) => {
+  if (similarity > 0.7) {
+    return 'danger'; // 红色
+  } else if (similarity > 0.6) {
+    return 'warning'; // 橙色
+  } else if (similarity > 0.5) {
+    return 'info'; // 黄色（Element UI的info类型接近黄色）
+  }
+  return 'default'; // 默认颜色（可选）
+};
+
+// 确定按钮文本
+const getButtonText = (similarity) => {
+  if (similarity > 0.7) {
+    return '极强';
+  } else if (similarity > 0.6) {
+    return '强';
+  } else if (similarity > 0.5) {
+    return '中';
+  }
+  return ''; // 数值不满足条件时显示空（或其他文字）
+};
+
 
 // -------------------------------------------------------------------
 const dataObjects = ref([
@@ -593,11 +627,6 @@ const initChart3 = (index, rowIndex, colIndex, retryCount = 0) => {
         return;
       }
       
-      // if (!dates || !Array.isArray(dates) || dates.length === 0) {
-      //   console.error(`dates 数据无效: ${JSON.stringify(dates)}`);
-      //   return;
-      // }
-      
       // 计算所有数据中的最小值和最大值，增加空数据处理
       const allValues = [].concat(...chartData.filter(series => series && Array.isArray(series)));
       if (allValues.length === 0) {
@@ -767,6 +796,14 @@ const initChart2 = (index, rowIndex, colIndex, retryCount = 0) => {
 
 const saveSelfMode = () => {
   console.log("保存自定义模式");
+  // 弹出一个提示窗口，用户可以输入保存模式的名称
+  const modeName = prompt("请输入保存模式的名称");
+  if (modeName) {
+    // 弹出信息保存成功
+    alert(`自定义模式 "${modeName}" 已保存`);
+  } else {
+    alert("未输入模式名称，保存操作取消");
+  }
 }
 
 </script>

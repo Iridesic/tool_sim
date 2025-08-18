@@ -315,7 +315,7 @@
 
             <!-- 文字多选题部分保持不变 -->
             <div v-if="qaMode === 'text'" style="color: black; font-size: 14px;">
-              <h4 style="margin-top: 0px;">在比较两个股票片段是否相似时，您考虑到的因素是？（可多选，默认为全选）</h4>
+              <h4 style="margin-top: 0px;">【1】在比较两个股票片段是否相似时，您考虑到的因素是？（可多选，默认为全选）</h4>
               <el-table
                 ref="multipleTableRef"
                 :data="tableDataMultiple"
@@ -351,8 +351,6 @@
                   </template>
                 </el-table-column>
               </el-table>
-
-
               <div style="display: flex; margin-left: 100px;">
                 <div style="margin-top: 20px;">
                   <span style="margin-right: 10px;">补充选项:</span>
@@ -364,7 +362,43 @@
                 </div>
                 <el-button type="primary" style="margin-top: 20px; font-size: 13px; height: 30px; margin-left: 10px;" @click="submitTextAnswer">提交补充因素（待审核）</el-button>
               </div>
-
+              <hr style="margin-top: 20px; background-color: cadetblue;">
+              <h4 style="margin-top: 20px;">【2】您可以通过如下设置，修改均线的默认权重（默认权重相同，均为10）</h4>
+              <el-table
+                ref="multipleTableRef1"
+                :data="tableDataMultiple2"
+                row-key="id"
+                style="width: 90%; margin-left: 40px;"
+                @selection-change="handleSelectionChange2"
+                border
+                :row-height="50" 
+              >
+                <el-table-column type="selection" width="60" />
+                <el-table-column property="type" label="特征来源" width="150">
+                  <template #default="{ row }">
+                    <div style="padding: 12px 0;">{{ row.type }}</div>  <!-- 增加单元格内边距 -->
+                  </template>
+                </el-table-column>
+                <el-table-column property="name" label="均线名称" width="150">
+                  <template #default="{ row }">
+                    <div style="padding: 12px 0;">{{ row.name }}</div>  <!-- 增加单元格内边距 -->
+                  </template>
+                </el-table-column>
+                <el-table-column label="权重设置（默认10分）">
+                  <template #default="{ row }">
+                    <div style="padding: 8px 0;">  <!-- 增加单元格内边距 -->
+                      <el-input-number
+                        v-if="isRowSelected2(row)"
+                        v-model="row.weight"
+                        :min="0"
+                        :max="100"
+                        style="width: 100px;"
+                      />
+                      <span v-else>-</span>
+                    </div>
+                  </template>
+                </el-table-column>
+              </el-table>
 
             </div>
           </div>
@@ -397,7 +431,7 @@ const props = defineProps({
   },
   dialogTitle: {
     type: String,
-    default: "多头排列表格测试",
+    default: "相似特征确认",
   },
   dialogWidth: {
     type: [String, Number],
@@ -451,6 +485,10 @@ const multipleSelection = ref([])
 const handleSelectionChange = (val) => {
   multipleSelection.value = val;
 };
+const multipleSelection2 = ref([])
+const handleSelectionChange2 = (val) => {
+  multipleSelection2.value = val;
+};
 
 // 表格数据包含所有因素（系统默认和用户自定义）
 const tableDataMultiple = ref([
@@ -498,9 +536,53 @@ const tableDataMultiple = ref([
   },
 ])
 
+// 均线的权重数据
+const tableDataMultiple2 = ref([
+  {
+    id: 1,
+    type: '系统默认',
+    name: 'MA4',
+    weight: 10
+  },
+  {
+    id: 2,
+    type: '系统默认',
+    name: 'MA8',
+    weight: 10
+  },
+  {
+    id: 3,
+    type: '系统默认',
+    name: 'MA12',
+    weight: 10
+  },
+  {
+    id: 4,
+    type: '系统默认',
+    name: 'MA16',
+    weight: 10
+  },
+  {
+    id: 5,
+    type: '系统默认',
+    name: 'MA20',
+    weight: 10
+  },
+  {
+    id: 6,
+    type: '用户自定义',
+    name: 'MA47',
+    weight: 10
+  },
+])
+
 // 判断行是否被选中
 const isRowSelected = (row) => {
   return multipleSelection.value.some(item => item.id === row.id);
+};
+
+const isRowSelected2 = (row) => {
+  return multipleSelection2.value.some(item => item.id === row.id);
 };
 
 // 事件发射

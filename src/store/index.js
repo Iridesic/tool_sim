@@ -1772,13 +1772,34 @@ const store = createStore({
                     {code: '000021', startDate: '2025-01-07', endDate: '2025-02-27', saveTime: 1754902756597}
                 ],
                 recentNDaysValue: '近30天',
+            },
+            {
+                index:'self_mode_3',
+                name: '自定义模式3',
+                lines: ["MA4","MA8", "MA12", "MA16", "MA20", "MA47"],
+                modeFolder:'self_mode_3', // 保存刷选区间的文件夹
+                selectedFactor : null,
+                selectedFactor2 : null,
+                photoOption: [],
+                savedBrushTimeRanges: [
+                    {code: '000021', startDate: '2023-05-12', endDate: '2023-05-29', saveTime: 1754962444771},
+                    {code: '000021', startDate: '2022-07-15', endDate: '2022-08-08', saveTime: 1754962469512},
+                    {code: '000021', startDate: '2024-09-23', endDate: '2024-10-22', saveTime: 1754962496756}
+                ],
+                recentNDaysValue: '近40天',
             }
         ],
     },
 
     // 用于修改 state 的方法，必须是同步的
     mutations: {
-        updateNewSearchInfo(state, newSearchInfo) {
+        SET_MODE_LIST(state, data) {
+            state.modeListSelf = data
+        },
+        ADD_MODE(state, newMode) {
+            state.modeListSelf.push(newMode)
+        },
+            updateNewSearchInfo(state, newSearchInfo) {
             state.newSearchInfo = {
             ...state.newSearchInfo,
             ...newSearchInfo // 可同时更新多个属性
