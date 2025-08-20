@@ -29,6 +29,14 @@
             <!--显示从后台获取的图片-->
             <template #default="{ row }">
               <img :src="row.imagePath" alt="基准图片" style="width: 300px; height: 140px; margin-top: 30px; margin-bottom: 30px;">
+              <!-- <img 
+                :src="img.url" 
+                :alt="img.filename" 
+                :title="img.filename"
+                class="screenshot-img"
+                style="width: 260px; height: 260px; object-fit: cover; border-radius: 3px; margin-top: 28px;"
+                @error="handleImageError(img)"
+              > -->
             </template>
           </el-table-column>
 
@@ -55,6 +63,7 @@
 <script setup>
 import { ref, onMounted, nextTick, watch, toRaw, computed  } from 'vue';
 import { useStore } from "vuex";
+import axios from "axios";
 import * as echarts from 'echarts';
 
 const store = useStore();
@@ -246,10 +255,46 @@ const dataObjects2 = ref([
 ]);
 const dataObjects3 = ref([]);
 
+const curImg = ref();
+const imageList = ref([]);
+const loading = ref(true);
+const fetchImages = async () => {
+  const timestamp = new Date().getTime();
+  const API_BASE_URL = 'http://127.0.0.1:5000';
+  const folderName = store.state.newSearchInfo.baseFolder;
+  try {
+    loading.value = true;
+    const params = new URLSearchParams();
+    params.append('timestamp', timestamp);
+    params.append('folder', folderName);
+    // const response = await axios.get(`${API_BASE_URL}/get_all_screenshots?timestamp=${timestamp}`);
+    const response = await axios.get(`${API_BASE_URL}/get_all_screenshots`,{params});
+    if (response.data.success) {
+      // 处理图片列表，修正URL并编码特殊字符
+      imageList.value = response.data.images.map(image => ({
+        ...image,
+        url: `${API_BASE_URL}/get_screenshot/${encodeURIComponent(image.filename)}`
+      }));
+    }
+  } catch (err) {
+    console.error('获取图片失败:', err);
+    // 更详细的错误信息输出
+    if (err.response) {
+      console.error('错误状态码:', err.response.status);
+      console.error('错误内容:', err.response.data);
+    }
+  } finally {
+    loading.value = false;
+  }
+  curImg.value = imageList.value.length > 0 ? imageList.value[0].url : '';
+}; 
+
+
 // 监听vuex中的sim_stock_list,更新dataObjects3的数据
-watch(() => store.state.sim_stock_list, (newList) => {
+watch(() => store.state.sim_stock_list, async(newList) => {
   console.log("-------watch sim_stock_list-------");
-  console.log(newList);
+  await fetchImages();
+
   if (newList && newList.length > 0) {
     dataObjects3.value = newList.map(item => ({
       stockCode: item.stock_code,
@@ -262,7 +307,7 @@ watch(() => store.state.sim_stock_list, (newList) => {
       dates: item.dates || [], // 确保dates属性存在
       dates2: [],
       chartData3: [],
-      imagePath: '/savepng/demo.png'
+      imagePath: curImg.value
     }));
 
     // 数据更新后初始化图表

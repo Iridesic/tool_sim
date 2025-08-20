@@ -66,7 +66,7 @@ const store = createStore({
         searchInfo:{
             searchStartDate: '--',
             searchEndDate: '--',
-            stockList:['000021'],
+            stockList:[],
         },
 
         // 查找结果的统计信息

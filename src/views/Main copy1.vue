@@ -578,8 +578,12 @@ const getShowDialog = () => {
   showDialog.value = true;
 };
 
-
 const doResult = async() => {
+  const result = store.state.searchInfo.stockList.map(item => {
+    return item.code;
+  });
+  console.log(result);
+
   if(isChooseStock.value === true)
   {
     isGetResult.value = true;
@@ -610,6 +614,15 @@ const doResult = async() => {
   }
   else{
     console.log("2222222222");
+    store.commit("updateBaseInfo", {
+      isMode: true,
+      isStock: false,
+      currentFunction:"推荐模式查找",
+      isDisabled: true,
+      isHistorySearch: false,
+      isChooseStock: true,
+    });
+
     store.commit("updateNewSearchInfo", {
       savedBrushTimeRanges: savedBrushTimeRanges.value,
       recentNDaysValue: recentNDaysValue.value,
@@ -640,6 +653,7 @@ const doResult = async() => {
         end_date: target.savedBrushTimeRanges[0].endDate,
         n_days: target.recentNDaysValue,
         ma_list: target.lines,
+        stock_pool: result,
       },
       {
         headers: {
@@ -724,6 +738,9 @@ const doResult = async() => {
 }
 
 const getResult = async() => {
+  console.log("当前基准文件夹:", store.state.newSearchInfo.baseFolder);
+  console.log("股票池", store.state.searchInfo.stockList);
+
   if (store.state.newSearchInfo.ifSet === false) {
   // 弹出带确定和取消按钮的确认窗口
   ElMessageBox.confirm(
@@ -770,26 +787,6 @@ const handleRowClick = async (row) => {
     stockShowInfo.value = { ...foundStock };
   }
   selectedDatePreset.value = null;
-};
-
-const handleRowClick1 = async (row) => {
-  const code = row.code;
-  const startDate = new Date('2024-09-24');
-  const endDate = new Date('2024-11-13');
-  store.commit("updateResultStockInfo", {
-    code: code,
-    name: row.name,
-    startDate: startDate,
-    endDate: endDate,
-  });
-  if(isChooseStock.value === true)
-    {
-      isGetResult.value = true;
-    }
-    if(isHistorySearch.value === true)
-    {
-      isGetResult2.value = true;
-    }
 };
 
 const activeName1 = ref("near");
