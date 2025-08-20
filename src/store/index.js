@@ -1750,9 +1750,7 @@ const store = createStore({
             //     minDays: 3,
             // },
         ],
-        
-        
-        
+            
         // 自定义模式列表【用户可以自定义保存的模式，基于newSearchInfo添加几个指标项建立】
         // modeListSelf:[
         //     {
@@ -1805,16 +1803,19 @@ const store = createStore({
             state.modeListSelf = data;
         },
 
-        SET_MODE_LIST(state, data) {
-            state.modeListSelf = data
+        // 设置模式列表
+        SET_MODE_LIST_SELF(state, data) {
+        state.modeListSelf = data
         },
-        ADD_MODE(state, newMode) {
-            state.modeListSelf.push(newMode)
+        // 添加新模式
+        ADD_MODE_SELF(state, newMode) {
+        state.modeListSelf.push(newMode)
         },
-            updateNewSearchInfo(state, newSearchInfo) {
+
+        updateNewSearchInfo(state, newSearchInfo) {
             state.newSearchInfo = {
-            ...state.newSearchInfo,
-            ...newSearchInfo // 可同时更新多个属性
+                ...state.newSearchInfo,
+                ...newSearchInfo
             };
         },
         
@@ -1872,6 +1873,43 @@ const store = createStore({
             } catch (error) {
                 console.error('加载modeListSelf失败:', error);
                 commit('setModeListSelf', []); // 失败时设为空数组
+            }
+        },
+
+        async fetchModeListSelf({ commit }) {
+            try {
+                const timestamp = new Date().getTime();
+                const API_BASE_URL = 'http://127.0.0.1:5000'
+                const response = await axios.get(`${API_BASE_URL}/get_modeListSelf_new?timestamp=${timestamp}`)
+                if (response.data.success) {
+                    commit('SET_MODE_LIST_SELF', response.data.data)
+                    return true
+                }
+                return false
+            } catch (error) {
+                console.error('获取模式列表失败:', error)
+                throw error
+            }
+        },
+        
+        // 新增模式到后端
+        async addNewModeToSelfList({ commit }, newMode) {
+            try {
+                // 调用后端新增接口
+                const timestamp = new Date().getTime();
+                const API_BASE_URL = 'http://127.0.0.1:5000'
+                const response = await axios.post(`${API_BASE_URL}/add_modeListSelf_new?timestamp=${timestamp}`, newMode)
+
+                // 后端成功写入后，更新本地状态
+                if (response.data.success) {
+                commit('ADD_MODE_SELF', newMode)
+                return true // 新增成功
+                } else {
+                throw new Error(response.data.message || '后端处理失败')
+                }
+            } catch (error) {
+                console.error('新增自定义模式失败:', error)
+                throw error // 抛出错误供组件捕获处理
             }
         },
 

@@ -150,7 +150,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick, watch, defineProps, defineEmits,toRaw } from "vue";
+import { ref, onMounted, nextTick, watch, defineProps, defineEmits,toRaw, computed } from "vue";
 import { useStore } from "vuex";
 import axios from "axios";
 import * as echarts from "echarts";
@@ -184,7 +184,11 @@ const modeList = store.state.modeList.map((item) => {
 // });
 
 // 图片获取 ==========================================================
-const modeListSelf = ref([]);
+// const modeListSelf = ref([]);
+
+const modeListSelf = computed(() => {
+  return store.getters.getModeListSelf
+})
 
 const imageList = ref([]);
 const loading = ref(true);
@@ -660,8 +664,20 @@ watch(() => getModeListSelf(),
   },
   { immediate: true } // 立即执行一次
 );
+
+
+// 从后端获取模式列表
+const fetchModeList = async () => {
+  try {
+    await store.dispatch('fetchModeListSelf')
+  } catch (error) {
+    alert('获取模式列表失败: ' + error.message)
+  }
+}
+
 onMounted(() => {
-    loadModeListSelf();
+    // loadModeListSelf();
+    fetchModeList();
     modeList.forEach((_, index) => {
       const chartDom = chartRefs.value[index];
       if (chartDom) {

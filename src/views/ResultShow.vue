@@ -839,13 +839,54 @@ const initChart2 = (index, rowIndex, colIndex, retryCount = 0) => {
 };
 
 
-const saveSelfMode = () => {
+// 响应式变量
+const newMode = ref({
+  index: '',
+  name: '',
+  lines: [],
+  modeFolder: '',
+  selectedFactor: null,
+  savedBrushTimeRanges: [],
+  recentNDaysValue: "近30天"
+})
+
+const saveSelfMode = async () => {
   console.log("保存自定义模式");
   // 弹出一个提示窗口，用户可以输入保存模式的名称
   const modeName = prompt("请输入保存模式的名称");
   if (modeName) {
     // 弹出信息保存成功
-    alert(`自定义模式 "${modeName}" 已保存`);
+    try {
+      // 自动设置modeFolder与index一致
+      newMode.value.modeFolder = modeName;
+      newMode.value.name = modeName;
+      newMode.value.index = modeName;
+      const oriLines = store.state.modeInfo.lines;
+      const maNumbers = oriLines.filter(item => item.startsWith('MA'));
+
+      // 将提取的数字数组赋值给新模式
+      newMode.value.lines = maNumbers;
+      newMode.value.savedBrushTimeRanges = store.state.newSearchInfo.savedBrushTimeRanges;
+      newMode.value.recentNDaysValue = store.state.newSearchInfo.recentNDaysValue;
+      // 调用Vuex action新增模式
+      await store.dispatch('addNewModeToSelfList', newMode.value)
+      
+      // 显示成功提示
+      alert('新增成功')
+      
+      // 重置表单
+      newMode.value = {
+        index: '',
+        name: '',
+        lines: [],
+        modeFolder: '',
+        selectedFactor: null,
+        savedBrushTimeRanges: [],
+        recentNDaysValue: "近30天"
+      }
+    } catch (error) {
+      alert('新增失败：' + error.message)
+    }
   } else {
     alert("未输入模式名称，保存操作取消");
   }
