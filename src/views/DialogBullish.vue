@@ -315,7 +315,7 @@
 
             <!-- 文字多选题部分保持不变 -->
             <div v-if="qaMode === 'text'" style="color: black; font-size: 14px;">
-              <h4 style="margin-top: 0px;">【1】在比较两个股票片段是否相似时，您考虑到的因素是？（可多选，默认为全选）</h4>
+              <h4 style="margin-top: 0px;">【1】在比较两个股票片段是否相似时，您考虑到的因素是？<br>（默认为全选，每个特征默认权重值5，满分10，未选择项自动配置权重0）</h4>
               <el-table
                 ref="multipleTableRef"
                 :data="tableDataMultiple"
@@ -325,18 +325,23 @@
                 border
                 :row-height="50" 
               >
-                <el-table-column type="selection" width="60" />
-                <el-table-column property="type" label="特征来源" width="150">
+                <el-table-column type="selection" width="50" />
+                <el-table-column property="type" label="特征来源" width="120">
                   <template #default="{ row }">
                     <div style="padding: 12px 0;">{{ row.type }}</div>  <!-- 增加单元格内边距 -->
                   </template>
                 </el-table-column>
-                <el-table-column property="name" label="特征名称" width="150">
+                <el-table-column property="name" label="特征名称" width="130">
                   <template #default="{ row }">
                     <div style="padding: 12px 0;">{{ row.name }}</div>  <!-- 增加单元格内边距 -->
                   </template>
                 </el-table-column>
-                <el-table-column label="权重设置（满分10分）">
+                <el-table-column property="name" label="特征描述" width="270">
+                  <template #default="{ row }">
+                    <div style="padding: 12px 0;">{{ row.desc }}</div>  <!-- 增加单元格内边距 -->
+                  </template>
+                </el-table-column>
+                <el-table-column label="权重设置 / 10分">
                   <template #default="{ row }">
                     <div style="padding: 8px 0;">  <!-- 增加单元格内边距 -->
                       <el-input-number
@@ -363,7 +368,7 @@
                 <el-button type="primary" style="margin-top: 20px; font-size: 13px; height: 30px; margin-left: 10px;" @click="submitTextAnswer">提交补充因素（待审核）</el-button>
               </div>
               <hr style="margin-top: 20px; background-color: cadetblue;">
-              <h4 style="margin-top: 20px;">【2】您可以通过如下设置，修改均线的默认权重（默认权重相同，均为10）</h4>
+              <h4 style="margin-top: 20px;">【2】您可以通过如下设置，修改一条或几条均线的权重（默认权重相同，均为10）</h4>
               <el-table
                 ref="multipleTableRef1"
                 :data="tableDataMultiple2"
@@ -411,7 +416,7 @@
         <div style="margin-top: 10px;">
           <el-button @click="onUpdateVisible(false)">取消</el-button>
           <el-button type="primary" @click="onConfirm" class="apply-mode-btn">
-            确认
+            确认更新配置
           </el-button>
         </div>
       </template>
@@ -494,45 +499,108 @@ const handleSelectionChange2 = (val) => {
 const tableDataMultiple = ref([
   {
     id: 1,
-    type: '系统默认',
-    name: '片段长度',
-    weight: 0
+    tip: 'trend_direction_agreement',
+    type: '单均线形态',
+    name: '趋势方向',
+    desc: '均线序列整体的升降趋势',
+    weight: 5
   },
   {
     id: 2,
-    type: '系统默认',
-    name: '均线发散程度',
-    weight: 0
+    tip:'trend_strength_similarity',
+    type: '单均线形态',
+    name: '趋势强度',
+    desc: '均线上升或下降的陡峭程度',
+    weight: 5
   },
   {
     id: 3,
-    type: '系统默认',
-    name: '均线倾斜程度',
-    weight: 0
+    tip: 'dtw_similarity',
+    type: '单均线形态',
+    name: '弯曲形态',
+    desc: '均线序列整体的形态轮廓',
+    weight: 5
   },
   {
     id: 4,
-    type: '系统默认',
-    name: '出现金叉情况',
-    weight: 0
+    tip: 'volatility_similarity',
+    type: '单均线数据',
+    name: '波动幅度',
+    desc: '均线的离散程度',
+    weight: 5
   },
   {
     id: 5,
-    type: '系统默认',
-    name: '出现死叉情况',
-    weight: 0
+    tip: 'mean_level_similarity',
+    type: '单均线数据',
+    name: '均值水平',
+    desc: '均线序列的整体数值水平',
+    weight: 5
   },
   {
     id: 6,
-    type: '用户自定义',
-    name: 'MA4下穿MA20情况',
-    weight: 0
+    tip: 'pearson_similarity',
+    type: '单均线数据',
+    name: '线性同步',
+    desc: '均线数值波动的线性同步关系',
+    weight: 5
   },
   {
     id: 7,
-    type: '用户自定义',
-    name: 'MA4初始倾斜角度',
-    weight: 0
+    tip: 'spearman_similarity',
+    type: '单均线数据',
+    name: '涨跌排序',
+    desc: '均线涨跌趋势的排序一致关系',
+    weight: 5
+  },
+
+  {
+    id: 8,
+    tip: 'golden_position',
+    type: '多均线形态',
+    name: '金叉位置',
+    desc: '中短期均线上穿长期均线的时间点分布',
+    weight: 5
+  },
+  {
+    id: 9,
+    tip: 'death_position',
+    type: '多均线形态',
+    name: '死叉位置',
+    desc: '中短期均线下穿长期均线的时间点分布',
+    weight: 5
+  },
+  {
+    id: 10,
+    tip: 'golden_count',
+    type: '多均线数据',
+    name: '金叉频率',
+    desc: '指定时间范围内金叉的发生次数',
+    weight: 5
+  },
+  {
+    id: 11,
+    tip: 'death_count',
+    type: '多均线形态',
+    name: '死叉频率',
+    desc: '指定时间范围内死叉的发生次数',
+    weight: 5
+  },
+  {
+    id: 12,
+    tip: 'single_ma_features',
+    type: '特征融合',
+    name: '单均线特征',
+    desc: '单条均线表现出的形态与数据特征',
+    weight: 5
+  },
+  {
+    id: 13,
+    tip: 'crossover_features',
+    type: '特征融合',
+    name: '多均线组合特征',
+    desc: '多条均线组合表现出的形态与数据特征',
+    weight: 5
   },
 ])
 
@@ -663,7 +731,7 @@ const onUpdateVisible = (newValue) => {
   supplementaryOption.value = '';
   multipleSelection.value = [];
   tableDataMultiple.value.forEach(item => {
-    item.weight = 0;
+    item.weight = 5;
   });
   
   emit("close");
@@ -673,14 +741,122 @@ const onUpdateVisible = (newValue) => {
 // 查找方式
 const searchMode = ref('multi');
 const dateRange = ref([new Date('2016-01-02'), new Date('2016-06-20')]);
-
 const searchInfo = store.state.searchInfo;
+
 const onConfirm = () => {
   store.commit("updateNewSearchInfo", {
     ifSet: true,
   });
   if (qaMode.value === 'text') {
     console.log('=== 文字问答答案 ===');
+
+    // 【全部因素控制台输出，未选中项自动配置权重为0】-------------------------------------------------------
+    const allFactorsWithWeight = tableDataMultiple.value.map(item => {
+      // 检查当前项是否被选中
+      const isSelected = multipleSelection.value.some(
+        selected => selected.id === item.id
+      );
+      
+      // 如果选中，使用修改后的权重；未选中，权重设为0
+      if (isSelected) {
+        const selectedItem = multipleSelection.value.find(
+          selected => selected.id === item.id
+        );
+        return {
+          ...item,
+          weight: selectedItem.weight // 使用选中后修改的权重
+        };
+      } else {
+        return {
+          ...item,
+          weight: 0 // 未选中项权重设为0
+        };
+      }
+    });
+    
+    console.log('全部因素及权重:', allFactorsWithWeight);
+    // 初始化权重结构
+    const default_group_weights = {
+        'single_ma_features': 0,
+        'crossover_features': 0
+    };
+    const default_single_ma_weights = {};
+    const default_crossover_weights = {};
+
+    // 定义分组对应的tip集合
+    const singleMaTips = [
+        'trend_direction_agreement',
+        'trend_strength_similarity',
+        'dtw_similarity',
+        'volatility_similarity',
+        'mean_level_similarity',
+        'pearson_similarity',
+        'spearman_similarity'
+    ];
+    const crossoverTips = [
+        'golden_position',
+        'death_position',
+        'golden_count',
+        'death_count'
+    ];
+
+    // 第一步：收集各组权重并计算总和
+    const groupWeights = {
+        single_ma: 0,
+        crossover: 0
+    };
+    const singleMaTotal = { sum: 0 };
+    const crossoverTotal = { sum: 0 };
+
+    allFactorsWithWeight.forEach(item => {
+        const weightValue = item.weight;
+        
+        if (item.tip === 'single_ma_features') {
+            groupWeights.single_ma = weightValue;
+        } else if (item.tip === 'crossover_features') {
+            groupWeights.crossover = weightValue;
+        } else if (singleMaTips.includes(item.tip)) {
+            singleMaTotal.sum += weightValue;
+            // 临时存储原始权重
+            default_single_ma_weights[item.tip] = weightValue;
+        } else if (crossoverTips.includes(item.tip)) {
+            crossoverTotal.sum += weightValue;
+            // 临时存储原始权重
+            default_crossover_weights[item.tip] = weightValue;
+        }
+    });
+
+    // 第二步：归一化处理 - 组间权重
+    const groupTotal = groupWeights.single_ma + groupWeights.crossover;
+    if (groupTotal > 0) {
+        default_group_weights['single_ma_features'] = groupWeights.single_ma / groupTotal;
+        default_group_weights['crossover_features'] = groupWeights.crossover / groupTotal;
+    }
+
+    // 第三步：归一化处理 - 单均线内部特征权重
+    if (singleMaTotal.sum > 0) {
+        Object.keys(default_single_ma_weights).forEach(tip => {
+            default_single_ma_weights[tip] /= singleMaTotal.sum;
+        });
+    }
+
+    // 第四步：归一化处理 - 交叉特征内部权重
+    if (crossoverTotal.sum > 0) {
+        Object.keys(default_crossover_weights).forEach(tip => {
+            default_crossover_weights[tip] /= crossoverTotal.sum;
+        });
+    }
+
+    // 输出结果
+    console.log('归一化后的组间权重:', default_group_weights);
+    console.log('归一化后的单均线特征权重:', default_single_ma_weights);
+    console.log('归一化后的交叉特征权重:', default_crossover_weights);
+    store.commit("updateNewSearchInfo", {
+      group_weights: default_group_weights,
+      single_ma_weights: default_single_ma_weights,
+      crossover_weights: default_crossover_weights,
+    });
+    // ---------------------------------------------------------
     
     const selectedFactors = multipleSelection.value.map(item => ({
       id: item.id,

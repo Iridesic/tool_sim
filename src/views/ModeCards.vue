@@ -169,21 +169,23 @@ const modeList = store.state.modeList.map((item) => {
   };
 });
 
-const modeListSelf = store.state.modeListSelf.map((item) => {
-  return {
-    name: item.name,
-    index: item.index,
-    modeFolder: item.modeFolder,
-    selectedFactor: item.selectedFactor,
-    selectedFactor2: item.selectedFactor2,
-    photoOption: item.photoOption,
-    savedBrushTimeRanges: item.savedBrushTimeRanges,
-    recentNDaysValue: item.recentNDaysValue,
-    lines: item.lines,
-  };
-});
+// const modeListSelf = store.state.modeListSelf.map((item) => {
+//   return {
+//     name: item.name,
+//     index: item.index,
+//     modeFolder: item.modeFolder,
+//     selectedFactor: item.selectedFactor,
+//     selectedFactor2: item.selectedFactor2,
+//     photoOption: item.photoOption,
+//     savedBrushTimeRanges: item.savedBrushTimeRanges,
+//     recentNDaysValue: item.recentNDaysValue,
+//     lines: item.lines,
+//   };
+// });
 
 // 图片获取 ==========================================================
+const modeListSelf = ref([]);
+
 const imageList = ref([]);
 const loading = ref(true);
 // 获取图片列表函数（修改版）
@@ -321,18 +323,18 @@ const handleApplyMode2 = () => {
   // 自定义模式不提供默认查找区间
   store.state.modeInfo.startDate = null;
   store.state.modeInfo.endDate = null;
-  console.log("应用模式:", modeListSelf[currentChartIndex.value]);
+  console.log("应用模式:", modeListSelf.value[currentChartIndex.value]);
   store.commit('updateModeInfo', {
-    index: modeListSelf[currentChartIndex.value].index,
-    name: modeListSelf[currentChartIndex.value].name,
-    lines: ["个股", ...modeListSelf[currentChartIndex.value].lines],
+    index: modeListSelf.value[currentChartIndex.value].index,
+    name: modeListSelf.value[currentChartIndex.value].name,
+    lines: ["个股", ...modeListSelf.value[currentChartIndex.value].lines],
     isMode: false,
     isSelected: true,
   });
 
   store.commit('updateNewSearchInfo', {
-    recentNDaysValue: modeListSelf[currentChartIndex.value].recentNDaysValue,
-    baseFolder: modeListSelf[currentChartIndex.value].index,
+    recentNDaysValue: modeListSelf.value[currentChartIndex.value].recentNDaysValue,
+    baseFolder: modeListSelf.value[currentChartIndex.value].index,
   });
   
   
@@ -362,19 +364,20 @@ const handleApplyMode3 = () => {
   // 处理应用模式的逻辑
   store.state.modeInfo.startDate = null;
   store.state.modeInfo.endDate = null;
-  console.log("应用模式:", modeListSelf[currentChartIndex.value]);
+  console.log(modeListSelf.value);
+  console.log("应用模式:", modeListSelf.value[currentChartIndex.value]);
   store.commit('updateModeInfo', {
-    index: modeListSelf[currentChartIndex.value].index,
-    name: modeListSelf[currentChartIndex.value].name,
-    lines: ["个股", ...modeListSelf[currentChartIndex.value].lines],
+    index: modeListSelf.value[currentChartIndex.value].index,
+    name: modeListSelf.value[currentChartIndex.value].name,
+    lines: ["个股", ...modeListSelf.value[currentChartIndex.value].lines],
     isMode: false,
     isSelected: true,
   });
 
   store.commit('updateNewSearchInfo', {
-    recentNDaysValue: modeListSelf[currentChartIndex.value].recentNDaysValue,
-    baseFolder: modeListSelf[currentChartIndex.value].index,
-    savedBrushTimeRanges: modeListSelf[currentChartIndex.value].savedBrushTimeRanges,
+    recentNDaysValue: modeListSelf.value[currentChartIndex.value].recentNDaysValue,
+    baseFolder: modeListSelf.value[currentChartIndex.value].index,
+    savedBrushTimeRanges: modeListSelf.value[currentChartIndex.value].savedBrushTimeRanges,
   });
   store.commit("updateBaseInfo", {
     isMode: true,
@@ -638,7 +641,27 @@ const renderChart = (chartDom, dataIndex) => {
   myChart.setOption(options);
 };
 
+
+
+// 从store中获取数据
+const getModeListSelf = () => store.getters.getModeListSelf;
+
+// 加载数据的方法
+const loadModeListSelf = () => store.dispatch('loadModeListSelf');
+
+// 监听数据变化
+watch(() => getModeListSelf(),
+  (newVal) => {
+    if (newVal.length > 0) {
+      console.log('从JSON加载的modeListSelf:', newVal);
+      modeListSelf.value = newVal;
+      // 这里可以处理数据加载完成后的逻辑
+    }
+  },
+  { immediate: true } // 立即执行一次
+);
 onMounted(() => {
+    loadModeListSelf();
     modeList.forEach((_, index) => {
       const chartDom = chartRefs.value[index];
       if (chartDom) {

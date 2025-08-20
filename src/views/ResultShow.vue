@@ -28,7 +28,7 @@
           <el-table-column label="基准区域（选区集中相似程度最高）" width="330px">
             <!--显示从后台获取的图片-->
             <template #default="{ row }">
-              <img :src="row.imagePath" alt="基准图片" style="width: 300px; height: 140px; margin-top: 30px; margin-bottom: 30px;">
+              <img :src="row.imagePath" alt="基准图片" style="width: 300px; height: 240px; margin-top: 10px; margin-bottom: -50px;">
               <!-- <img 
                 :src="img.url" 
                 :alt="img.filename" 
@@ -106,6 +106,8 @@ const getButtonType = (similarity) => {
     return 'warning'; // 橙色
   } else if (similarity > 0.5) {
     return 'info'; // 黄色（Element UI的info类型接近黄色）
+  } else if(similarity > 0.3){
+    return 'success';
   }
   return 'default'; // 默认颜色（可选）
 };
@@ -118,6 +120,8 @@ const getButtonText = (similarity) => {
     return '强';
   } else if (similarity > 0.5) {
     return '中';
+  } else if (similarity > 0.3) {
+    return '弱';
   }
   return ''; // 数值不满足条件时显示空（或其他文字）
 };
@@ -657,15 +661,11 @@ const initChart3 = (index, rowIndex, colIndex, retryCount = 0) => {
         console.error(`dataObjects3[${rowIndex}] 不存在`);
         return;
       }
-      
       if (colIndex === 0) {
         chartData = dataObjects3.value[rowIndex].chartData;
-        // dates = dataObjects3.value[rowIndex].dates;
       } else if (colIndex === 1) {
         chartData = dataObjects3.value[rowIndex].chartData2;
-        // dates = dataObjects3.value[rowIndex].dates2 || dataObjects3.value[rowIndex].dates;
       }
-      
       // 校验图表数据和日期数据
       if (!chartData || !Array.isArray(chartData) || chartData.length === 0) {
         console.error(`chartData 数据无效: ${JSON.stringify(chartData)}`);

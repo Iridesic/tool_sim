@@ -1,4 +1,5 @@
 import { createStore } from 'vuex';
+import axios from "axios";
 
 const store = createStore({
     state: {
@@ -16,6 +17,9 @@ const store = createStore({
             savedBrushTimeRanges: [], // 保存的刷选时间区间
             recentNDaysValue: '--', // 最近N天的值
             lines:[],
+            group_weights: {},
+            single_ma_weights: {},
+            crossover_weights: {},
         },
 
         baseInfo:{
@@ -1746,53 +1750,61 @@ const store = createStore({
             //     minDays: 3,
             // },
         ],
+        
+        
+        
         // 自定义模式列表【用户可以自定义保存的模式，基于newSearchInfo添加几个指标项建立】
-        modeListSelf:[
-            {
-                index:'self_mode_1',
-                name: '自定义模式1',
-                lines: ["MA4","MA8", "MA12", "MA16", "MA20", "MA47"],
-                modeFolder:'self_mode_1', // 保存刷选区间的文件夹
-                selectedFactor : null,
-                selectedFactor2 : null,
-                photoOption: [],
-                savedBrushTimeRanges: [{code: '000021', startDate: '2025-01-17', endDate: '2025-03-05', saveTime: 1754902645071}],
-                recentNDaysValue: '近20天',
-            },
-            {
-                index:'self_mode_2',
-                name: '自定义模式2',
-                lines: ["MA4","MA8", "MA12", "MA16", "MA20", "MA47"],
-                modeFolder:'self_mode_2', // 保存刷选区间的文件夹
-                selectedFactor : null,
-                selectedFactor2 : null,
-                photoOption: [],
-                savedBrushTimeRanges: [
-                    {code: '000021', startDate: '2025-01-16', endDate: '2025-03-05', saveTime: 1754902744242},
-                    {code: '000021', startDate: '2025-01-07', endDate: '2025-02-27', saveTime: 1754902756597}
-                ],
-                recentNDaysValue: '近30天',
-            },
-            {
-                index:'self_mode_3',
-                name: '自定义模式3',
-                lines: ["MA4","MA8", "MA12", "MA16", "MA20", "MA47"],
-                modeFolder:'self_mode_3', // 保存刷选区间的文件夹
-                selectedFactor : null,
-                selectedFactor2 : null,
-                photoOption: [],
-                savedBrushTimeRanges: [
-                    {code: '000021', startDate: '2023-05-12', endDate: '2023-05-29', saveTime: 1754962444771},
-                    {code: '000021', startDate: '2022-07-15', endDate: '2022-08-08', saveTime: 1754962469512},
-                    {code: '000021', startDate: '2024-09-23', endDate: '2024-10-22', saveTime: 1754962496756}
-                ],
-                recentNDaysValue: '近40天',
-            }
-        ],
+        // modeListSelf:[
+        //     {
+        //         index:'self_mode_1',
+        //         name: '自定义模式1',
+        //         lines: ["MA4","MA8", "MA12", "MA16", "MA20", "MA47"],
+        //         modeFolder:'self_mode_1', // 保存刷选区间的文件夹
+        //         selectedFactor : null,
+        //         selectedFactor2 : null,
+        //         photoOption: [],
+        //         savedBrushTimeRanges: [{code: '000021', startDate: '2025-01-17', endDate: '2025-03-05', saveTime: 1754902645071}],
+        //         recentNDaysValue: '近20天',
+        //     },
+        //     {
+        //         index:'self_mode_2',
+        //         name: '自定义模式2',
+        //         lines: ["MA4","MA8", "MA12", "MA16", "MA20", "MA47"],
+        //         modeFolder:'self_mode_2', // 保存刷选区间的文件夹
+        //         selectedFactor : null,
+        //         selectedFactor2 : null,
+        //         photoOption: [],
+        //         savedBrushTimeRanges: [
+        //             {code: '000021', startDate: '2025-01-16', endDate: '2025-03-05', saveTime: 1754902744242},
+        //             {code: '000021', startDate: '2025-01-07', endDate: '2025-02-27', saveTime: 1754902756597}
+        //         ],
+        //         recentNDaysValue: '近30天',
+        //     },
+        //     {
+        //         index:'self_mode_3',
+        //         name: '自定义模式3',
+        //         lines: ["MA4","MA8", "MA12", "MA16", "MA20", "MA47"],
+        //         modeFolder:'self_mode_3', // 保存刷选区间的文件夹
+        //         selectedFactor : null,
+        //         selectedFactor2 : null,
+        //         photoOption: [],
+        //         savedBrushTimeRanges: [
+        //             {code: '000021', startDate: '2023-05-12', endDate: '2023-05-29', saveTime: 1754962444771},
+        //             {code: '000021', startDate: '2022-07-15', endDate: '2022-08-08', saveTime: 1754962469512},
+        //             {code: '000021', startDate: '2024-09-23', endDate: '2024-10-22', saveTime: 1754962496756}
+        //         ],
+        //         recentNDaysValue: '近40天',
+        //     }
+        // ],
+        modeListSelf: [], // 初始化为空数组
     },
 
     // 用于修改 state 的方法，必须是同步的
     mutations: {
+        setModeListSelf(state, data) {
+            state.modeListSelf = data;
+        },
+
         SET_MODE_LIST(state, data) {
             state.modeListSelf = data
         },
@@ -1852,6 +1864,17 @@ const store = createStore({
     // 用于处理异步操作，最终会调用 mutations 中的方法
     // 与后端相关的方法未启用
     actions: {
+        // 加载modeListSelf数据的action
+        async loadModeListSelf({ commit }) {
+            try {
+                const response = await axios.get('/modeListSelf.json'); // 请求public下的JSON文件
+                commit('setModeListSelf', response.data);
+            } catch (error) {
+                console.error('加载modeListSelf失败:', error);
+                commit('setModeListSelf', []); // 失败时设为空数组
+            }
+        },
+
         asyncUpdateGraphDataCode({ commit }, newCode) {
             // 模拟异步操作，比如调用 API
             return new Promise((resolve) => {
@@ -1939,6 +1962,7 @@ const store = createStore({
 
     // 用于获取 state 中的数据，类似于计算属性
     getters: {
+        getModeListSelf: (state) => state.modeListSelf,
         getGraphDataCode: (state) => state.graphDataCode,
         getStockList1: (state) => state.stockList1,
         getStockShowInfo: (state) => state.stockShowInfo,
@@ -1947,7 +1971,6 @@ const store = createStore({
         getSearchInfo: (state) => state.searchInfo,
         getResultList: (state) => state.resultList,
         getModeList: (state) => state.modeList,
-        getModeListSelf: (state) => state.modeListSelf,
         // 通过索引获取系统默认模式
         getModeListByIndex: (state) => (index) => {
             return state.modeList.find(mode => mode.index === index);

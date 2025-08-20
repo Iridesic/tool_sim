@@ -164,6 +164,7 @@
                     :label="item"
                     :value="item"
                     class="custom-checkbox"
+                    @change="showConfirmMessage"
                   ></el-checkbox>
                 </el-checkbox-group>
               </div>
@@ -355,9 +356,11 @@
             <el-button size="small" @click="setDateRange('daily')">日线</el-button>
             <el-button size="small" @click="setDateRange('weekly')">周线</el-button>
             <el-button size="small" @click="setDateRange('monthly')">月线</el-button>
-            <el-button size="small" @click="toggleZoomLock">
-              {{ isZoomLocked ? '取消锁定' : '锁定缩放比' }}
-            </el-button>
+            <el-tooltip content="点击锁定滚轮缩放功能" placement="top">
+              <el-button size="small" @click="toggleZoomLock">
+                {{ isZoomLocked ? '取消锁定' : '锁定缩放比' }}
+              </el-button>
+            </el-tooltip>
             <el-button size="small" @click="saveCurrentBrush" :disabled="!activeBrushData"> 保存当前标记
             </el-button>
             <el-button 
@@ -387,7 +390,10 @@ import html2canvas from 'html2canvas';
 // 在 <script setup> 部分添加导入
 import { ElMessageBox } from 'element-plus';
 import { ElMessage } from 'element-plus'; // 同时导入消息提示组件（如果用到）
-
+// 定义提示消息函数
+const showConfirmMessage = () => {
+  ElMessage.info('请确认截图结果与基础MA指标一致')
+}
 
 import ModeCards from "@/views/ModeCards.vue";
 import ResultShow from "@/views/ResultShow.vue";
@@ -644,17 +650,33 @@ const doResult = async() => {
     console.log('开始查询相似股票...');
     console.log('目标:', target.savedBrushTimeRanges);
     
-    // 发送POST请求
-    const response = await axios.post(
-      `${API_BASE_URL}/find_similar_stocks_new?timestamp=${timestamp}`,
-      {
+    const requestParams = ref({});
+    if(target.ifSet){
+      requestParams.value = {
         target_code: target.savedBrushTimeRanges[0].code,
         start_date: target.savedBrushTimeRanges[0].startDate,
         end_date: target.savedBrushTimeRanges[0].endDate,
         n_days: target.recentNDaysValue,
         ma_list: target.lines,
         stock_pool: result,
-      },
+        group_weights: target.group_weights, // 传入自定义的特征参数
+        single_ma_weights: target.single_ma_weights,
+        crossover_weights: target.crossover_weights
+      };
+    }else{
+      requestParams.value = {
+        target_code: target.savedBrushTimeRanges[0].code,
+        start_date: target.savedBrushTimeRanges[0].startDate,
+        end_date: target.savedBrushTimeRanges[0].endDate,
+        n_days: target.recentNDaysValue,
+        ma_list: target.lines,
+        stock_pool: result,
+      };
+    }
+    // 发送POST请求
+    const response = await axios.post(
+      `${API_BASE_URL}/find_similar_stocks_new?timestamp=${timestamp}`,
+      requestParams.value,
       {
         headers: {
           'Content-Type': 'application/json'
@@ -665,8 +687,9 @@ const doResult = async() => {
     if (response.data.result) {
       console.log(`成功获取${response.data.count}只相似股票`);
       console.log('相似股票数据:', response.data);
-      // 定义需要提取的均线字段顺序（根据数据中的MA类型确定，确保完整性）
-      const maFields = ['MA4', 'MA12', 'MA16', 'MA20', 'MA47']; // 可根据实际字段补充
+      
+      const base_periods = response.data.base_ma_periods;
+      const maFields = base_periods.map(period => `MA${period}`);
 
       // 处理每只股票的recent_data：先转二维数组，再转置
       response.data.result.forEach(stock => {
