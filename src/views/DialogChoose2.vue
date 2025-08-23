@@ -129,34 +129,37 @@ const checkedItems = ref({
 const store = useStore();
 
 const tableData = [
-  { code: '002119', name: "康强电子", from:"自选股票" },
-  { code: "002469", name: "三维化学",from:"自选股票"},
-  { code: "002915", name: "中欣氟材",from:"自选股票" },
-  { code: "002236", name: "大华股份",from:"自选股票" },
-  { code: '002913', name: "奥士康", from:"自选股票" },
-  { code: "002362", name: "汉王科技",from:"自选股票"},
-  { code: "002106", name: "莱宝高科",from:"自选股票" },
-  { code: "002161", name: "远望谷",from:"自选股票" },
-  { code: "003042", name: "中农联合",from:"自选股票" },
-  { code: "002919", name: "名臣健康",from:"自选股票" },
+  { code: '002484', name: "江海股份", from:"自选股票" },
+  { code: "002528", name: "ST英飞拓",from:"自选股票"},
+  { code: "002655", name: "共达电声",from:"自选股票" },
+  { code: "002759", name: "天际股份",from:"自选股票" },
+  { code: '300088', name: "长信科技", from:"自选股票" },
+  { code: "300109", name: "新开源",from:"自选股票"},
+  { code: "300610", name: "晨化股份",from:"自选股票" },
+  { code: "300641", name: "正丹股份",from:"自选股票" },
 ];
 
 
 const tableData2 = [
-  { code: "300124", name: "汇川技术", from: "同板块" },
-  { code: "002027", name: "分众传媒", from: "同板块" },
-  { code: "000333", name: "美的集团", from: "同板块" },
-  { code: "000651", name: "格力电器", from: "同板块" },
-  { code: "002714", name: "牧原股份", from: "同板块" },
+  { code: "002092", name: "ST中泰", from: "同板块" },
+  { code: "002106", name: "莱宝高科", from: "同板块" },
+  { code: "002119", name: "康强电子", from: "同板块" },
+  { code: "002134", name: "天津普林", from: "同板块" },
+  { code: "600378", name: "昊华科技", from: "同板块" },
+  { code: "600389", name: "江山股份", from: "同板块" },
+  { code: "600409", name: "三友化工", from: "同板块" },
+  { code: "600435", name: "北方导航", from: "同板块" },
 ];
 
 const tableData3 = [
-  { code: "002304", name: "洋河股份", from: "同行业" },
-  { code: "000895", name: "双汇发展", from: "同行业" },
-  { code: "000063", name: "中兴通讯", from: "同行业" },
-  { code: "002179", name: "中航光电", from: "同行业" },
-  { code: "002352", name: "顺丰控股", from: "同行业" },
-  { code: "002555", name: "三七互娱", from: "同行业" },
+  { code: "001255", name: "博菲电气", from: "同行业" },
+  { code: "001308", name: "康冠科技", from: "同行业" },
+  { code: "001309", name: "德明利", from: "同行业" },
+  { code: "001333", name: "光华股份", from: "同行业" },
+  { code: "603052", name: "可川科技", from: "同行业" },
+  { code: "603078", name: "江化微", from: "同行业" },
+  { code: "603110", name: "东方材料", from: "同行业" },
+  { code: "603125", name: "常青科技", from: "同行业" },
 ]
 
 const selectable = (row, index) => {
